@@ -1,9 +1,11 @@
 package pkg;
 
-public class Car implements Vehicle{
-
-    private String name;
+public class Car implements Vehicle {
     private int length;
+    private static int seq = 0;
+    private int car_id;
+    private int lane;
+    private int cell;
 
     public int getSpeed() {
         return speed;
@@ -23,15 +25,22 @@ public class Car implements Vehicle{
     private Position position;
 
     public Car(String name, int length, Position position) {
-        this.name = name;
+        this.car_id = seq;
+        seq++;
         this.length = length;
         this.position = position;
+    }
+
+    public Car(int speed) {
+        this.car_id = seq;
+        seq++;
+        this.speed = speed;
     }
 
     @Override
     public String toString() {
         return "Car{" +
-                "name='" + name + '\'' +
+                "name='" + car_id + '\'' +
                 ", position=" + position +
                 '}';
     }
