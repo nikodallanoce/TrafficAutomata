@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 public class Scenario {
 
     private Map<Road,RoadStatusUpdater> roadThreadMap;
     private List<Thread> threads;
+    private CyclicBarrier barrier;
 
     public boolean isFinished() {
         return finished;
@@ -18,7 +21,11 @@ public class Scenario {
 
     public Scenario(){
         this.roadThreadMap = new HashMap<>();
-        this.threads= new ArrayList<>(16);
+        this.threads= new ArrayList<>();
+    }
+
+    public int awaitBarrier() throws BrokenBarrierException, InterruptedException {
+        return barrier.await();
     }
 
     public RoadStatusUpdater getUpdaterByRoad(Road road){
@@ -44,8 +51,8 @@ public class Scenario {
     }
 
     public void start(){
+        this.barrier = new CyclicBarrier(threads.size());
         threads.forEach(Thread::start);
-        System.out.println();
     }
 
     public void addEntry(RoadStatusUpdater thr){

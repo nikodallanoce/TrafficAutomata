@@ -7,5 +7,7 @@ public interface Road{
     public int getYStartingPoint();
     public void setOccupiedCells(int x, int y);
 
+    public void setFreeCells(int x, int y);
+
     public Road getNextRoad();
 }

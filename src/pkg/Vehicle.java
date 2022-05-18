@@ -7,4 +7,5 @@ public interface Vehicle {
 
     public void updatePosition(Position newPosition);
     public void setSpeed(int amount);
+    public String toString();
 }

@@ -27,6 +27,11 @@ public class RoadFinish implements Road{
     }
 
     @Override
+    public void setFreeCells(int x, int y) {
+        throw new Error("END ROAD");
+    }
+
+    @Override
     public Road getNextRoad() {
         throw new Error("END ROAD");
     }

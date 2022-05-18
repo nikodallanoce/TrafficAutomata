@@ -28,6 +28,14 @@ public class Car implements Vehicle{
         this.position = position;
     }
 
+    @Override
+    public String toString() {
+        return "Car{" +
+                "name='" + name + '\'' +
+                ", position=" + position +
+                '}';
+    }
+
     public Car(String name, int length) {
         this(name, length, new Position(null,0, 0));
     }

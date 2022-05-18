@@ -2,14 +2,13 @@ package pkg;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RoadStatusUpdater implements Runnable {
     private List<Road> roadsOfCompetence;
     private BlockingQueue<Request> requests;
-    private ReentrantLock mutex;
 
     public Scenario getScenario() {
         return scenario;
@@ -31,42 +30,39 @@ public class RoadStatusUpdater implements Runnable {
         this.roadsOfCompetence = List.of(roadsOfCompetence);
         this.requests = new LinkedBlockingQueue<>();
         this.ID = seq;
-        this.mutex = new ReentrantLock();
         seq = seq + 1;
     }
 
     public boolean insertRequest(Request req) {
         return requests.add(req);
-        /*boolean success = false;
-        try {
-            mutex.lock();
-            success = requests.add(vehicle);
-        } finally {
-            mutex.unlock();
-        }
-        return success;*/
     }
 
     @Override
     public void run() {
-        while (!scenario.isFinished()) {
-            try {
-                Request req = requests.take();
-                if(ID==1&&false){
+        try {
+            while (!scenario.isFinished()) {
+                if (requests.size() > 0) {
+                    Request req = requests.take();
+                    Road road = req.getNewPosition().getRoad();
+                    Request nextReq = road.handleRequest(req);
+
+                    if (!nextReq.getNewPosition().getRoad().getClass().equals(RoadFinish.class)) {
+                        scenario.getUpdaterByRoad(nextReq.getNewPosition().getRoad()).insertRequest(nextReq);
+                    }
+                    else {
+                        var pos = req.getVehicle().getPosition();
+                        pos.getRoad().setFreeCells(pos.getX(), pos.getY());
+                    }
+                    System.out.println(nextReq.getVehicle() + " ->" + nextReq.getNewPosition());
+                    Thread.sleep(2000);
                     System.out.println();
                 }
-                Road road = req.getNewPosition().getRoad();
-                Request nextReq = road.handleRequest(req);
-                if (nextReq.getNewPosition().getRoad().getClass().equals(RoadFinish.class)) {
-                    scenario.setFinished(true);
-                } else {
-                    scenario.getUpdaterByRoad(nextReq.getNewPosition().getRoad()).insertRequest(nextReq);
-                }
-                System.out.println(nextReq.getVehicle().getPosition() + ""+ nextReq.getNewPosition());
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                scenario.awaitBarrier();
+
             }
+        } catch (BrokenBarrierException | InterruptedException e) {
+            e.printStackTrace();
         }
+
     }
 }
