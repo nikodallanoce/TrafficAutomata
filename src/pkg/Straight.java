@@ -6,27 +6,27 @@ public class Straight implements Road {
     private final int lanes;
     private final int length;
     private final double density;
-    private final int max_v;
-    private final double p_decrease_v;
-    private final double p_change_lane;
+    private final int maxSpeed;
+    private final double pDecreaseSpeed;
+    private final double pChangeLane;
     private boolean[][] road;
     private final int direction;
     private Map<int[], Vehicle> vehiclePositions;
     private double flow = 0;
     private Road outgoing;
     private static int seq = 0;
-    private final int road_id;
+    private final int roadId;
 
-    public Straight(int lanes, int length, double density, int max_v, double p_decrease_v, double p_change_lane, int direction, Road outgoing) {
+    public Straight(int lanes, int length, double density, int maxSpeed, double pDecreaseSpeed, double pChangeLane, int direction, Road outgoing) {
         this.lanes = lanes;
         this.length = length;
         this.density = density;
-        this.max_v = max_v;
-        this.p_decrease_v = p_decrease_v;
-        this.p_change_lane = p_change_lane;
+        this.maxSpeed = maxSpeed;
+        this.pDecreaseSpeed = pDecreaseSpeed;
+        this.pChangeLane = pChangeLane;
         this.direction = direction;
         this.outgoing = outgoing;
-        this.road_id = seq;
+        this.roadId = seq;
         seq++;
         buildRoad();
     }
@@ -46,43 +46,87 @@ public class Straight implements Road {
             indexes.add(i);
         }
 
-        //Set up the cars randomly on the road and assign a starting speed
+        //Set up the cars randomly on the road and assign them a starting speed
         Collections.shuffle(indexes);
         Random rand = new Random();
         for (int i=0;i<density*lanes*length;i++) {
             int index = indexes.get(i);
             int lane_index = index/length;
             int cell_index = index%length;
-            int vehicle_v = rand.nextInt(max_v+1);
+            int vehicle_v = rand.nextInt(maxSpeed +1);
             Vehicle vehicle = new Car(vehicle_v);
             vehiclePositions.put(new int[]{lane_index, cell_index}, vehicle);
             road[lane_index][cell_index] = true;
         }
     }
 
-    public void run_step() {
-        //Change lanes if possible
+    private void changeLane() {
+        Map<int[], Vehicle> vehiclesPreviousPositions = new HashMap<>(vehiclePositions);
+        for (var vehiclePosition: vehiclesPreviousPositions.entrySet()) {
+            int vehicleLane = vehiclePosition.getKey()[0];
+            int vehicleCell = vehiclePosition.getKey()[1];
+            Vehicle vehicle = vehiclePosition.getValue();
+            int distanceAhead = 0;
+            int distanceAheadOtherLane = 0;
+            int distanceBehindOtherLane = 0;
+            int otherLane = 1 - vehicleLane;
 
-        //Update the cars' speeds
+            //How far ahead the car can move forward
+            while (vehicleCell + distanceAhead + 1 < length && !road[vehicleLane][(vehicleCell + distanceAhead + 1)]) {
+                distanceAhead += 1;
+            }
+
+            //If the adjacent cell in the other lane is free
+            if (!road[otherLane][vehicleCell]) {
+                //How far ahead in other lane the car can move forward
+                while (vehicleCell + distanceAheadOtherLane + 1 < length && !road[otherLane][vehicleCell + distanceAheadOtherLane + 1]) {
+                    distanceAheadOtherLane += 1;
+                }
+
+                //How free is the other lane behind the car
+                while (vehicleCell - distanceBehindOtherLane - 1 >= 0 && !road[otherLane][vehicleCell - distanceBehindOtherLane - 1]) {
+                    distanceBehindOtherLane += 1;
+                }
+
+                //The car could change lane only if it is convenient in terms of distance
+                if (distanceAhead < distanceAheadOtherLane && distanceBehindOtherLane > maxSpeed) {
+                    Random rand = new Random();
+
+                    //The car changes lane with pChangeLane probability
+                    if (rand.nextDouble()<= pChangeLane) {
+                        //Remove car from previous lane
+                        vehiclePositions.remove(vehiclePosition.getKey());
+                        road[vehicleLane][vehicleCell] = false;
+
+                        //Move the car into its new lane
+                        road[otherLane][vehicleCell] = true;
+                        vehiclePositions.put(new int[]{otherLane, vehicleCell}, vehicle);
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateSpeeds() {
         for (var vehiclePosition: vehiclePositions.entrySet()) {
-            int vehicle_lane = vehiclePosition.getKey()[0];
-            int vehicle_cell = vehiclePosition.getKey()[1];
+            int vehicleLane = vehiclePosition.getKey()[0];
+            int vehicleCell = vehiclePosition.getKey()[1];
             Vehicle vehicle = vehiclePosition.getValue();
             int distance = 0;
 
             //Check how much the car can move forward
-            while (vehicle_cell + distance + 1 < length && !road[vehicle_lane][(vehicle_cell + distance + 1)]) {
+            while (vehicleCell + distance + 1 < length && !road[vehicleLane][(vehicleCell + distance + 1)]) {
                 distance += 1;
             }
             //If the car can move into another road then increase its allowed distance
-            if (vehicle_cell + distance + 1 == length) {
+            if (vehicleCell + distance + 1 == length) {
                 distance++;
             }
 
             //Increase the car speed if the distance to cover is bigger than its actual speed, and it has not reached the maximum
-            if (distance > vehicle.getSpeed() && vehicle.getSpeed() < max_v) {
-                int current_speed = vehicle.getSpeed();
-                vehicle.setSpeed(current_speed + 1);
+            if (distance > vehicle.getSpeed() && vehicle.getSpeed() < maxSpeed) {
+                int currentSpeed = vehicle.getSpeed();
+                vehicle.setSpeed(currentSpeed + 1);
             }
 
             //Set the car speed to the distance if it could not move to his previous velocity
@@ -92,35 +136,47 @@ public class Straight implements Road {
 
             //Decrease the car speed with a random probability
             Random rand = new Random();
-            if (vehicle.getSpeed() > 0 && rand.nextDouble() <= p_decrease_v) {
-                int current_speed = vehicle.getSpeed();
-                vehicle.setSpeed(current_speed - 1);
+            if (vehicle.getSpeed() > 0 && rand.nextDouble() <= pDecreaseSpeed) {
+                int currentSpeed = vehicle.getSpeed();
+                vehicle.setSpeed(currentSpeed - 1);
             }
         }
+    }
+
+    public List<Vehicle> run_step() {
+        List<Vehicle> vehiclesOut = new ArrayList<>();
+
+        //Change lanes if possible
+        changeLane();
+
+        //Update the cars' speeds
+        updateSpeeds();
 
         //Update the road state
         Map<int[], Vehicle> vehiclesPreviousPositions = new HashMap<>(vehiclePositions);
         for (var vehiclePosition: vehiclesPreviousPositions.entrySet()) {
-            int vehicle_lane = vehiclePosition.getKey()[0];
-            int vehicle_cell = vehiclePosition.getKey()[1];
+            int vehicleLane = vehiclePosition.getKey()[0];
+            int vehicleCell = vehiclePosition.getKey()[1];
             Vehicle vehicle = vehiclePosition.getValue();
-            int vehicle_steps = vehicle.getSpeed();
-            if (vehicle_steps != 0) {
+            int vehicleSteps = vehicle.getSpeed();
+            if (vehicleSteps != 0) {
                 //Remove the car from its current position
                 vehiclePositions.remove(vehiclePosition.getKey());
-                road[vehicle_lane][vehicle_cell] = false;
+                road[vehicleLane][vehicleCell] = false;
 
                 //Check if the car can move into another road, if so then move on
-                if (vehicle_cell + vehicle_steps == length) {
+                if (vehicleCell + vehicleSteps == length) {
                     //Put car inside new road, Niko
+                    vehiclesOut.add(vehicle);
                     continue;
                 }
 
                 //Move the car into its new position inside the road
-                road[vehicle_lane][vehicle_cell + vehicle_steps] = true;
-                vehiclePositions.put(new int[]{vehicle_lane, vehicle_cell + vehicle_steps}, vehicle);
+                road[vehicleLane][vehicleCell + vehicleSteps] = true;
+                vehiclePositions.put(new int[]{vehicleLane, vehicleCell + vehicleSteps}, vehicle);
             }
         }
+        return vehiclesOut;
     }
 
     /*public Request handleRequest(Request request) {
@@ -171,12 +227,12 @@ public class Straight implements Road {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Straight straight = (Straight) o;
-        return lanes == straight.lanes && length == straight.length && road_id == straight.road_id && Objects.equals(outgoing, straight.outgoing);
+        return lanes == straight.lanes && length == straight.length && roadId == straight.roadId && Objects.equals(outgoing, straight.outgoing);
     }
 
     @Override
     public String toString() {
-        String output = "";
+        String output = "Start Road\n";
         for (int i=0;i<lanes;i++) {
             for (int j=0;j<length;j++) {
                 if (!road[i][j]) {
@@ -196,12 +252,13 @@ public class Straight implements Road {
                 output = output.concat("\n");
             }
         }
+        output = output.concat("End Road\n");
         return output;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lanes, length, outgoing, road_id);
+        return Objects.hash(lanes, length, outgoing, roadId);
     }
 
     @Override
