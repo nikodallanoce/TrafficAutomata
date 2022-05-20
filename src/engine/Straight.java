@@ -159,9 +159,10 @@ public class Straight extends Road {
             Vehicle vehicle = vehiclePosition.getValue();
             int vehicleSteps = vehicle.getSpeed();
             if (vehicleSteps != 0) {
+                boolean vehicleAccepted = false;
                 //Check if the car can move into another road, if so then move on
                 if (vehicleCell + vehicleSteps == length) {
-                    boolean vehicleAccepted = outgoing.acceptVehicle(vehicle);
+                    vehicleAccepted = outgoing.acceptVehicle(vehicle);
                     if (!vehicleAccepted) {
                         vehicleSteps--;
                     }
@@ -172,8 +173,10 @@ public class Straight extends Road {
                 road[vehicleLane][vehicleCell] = false;
 
                 //Move the car into its new position inside the road
-                road[vehicleLane][vehicleCell + vehicleSteps] = true;
-                vehiclePositions.put(new Position(vehicleLane, vehicleCell + vehicleSteps), vehicle);
+                if (!vehicleAccepted) {
+                    road[vehicleLane][vehicleCell + vehicleSteps] = true;
+                    vehiclePositions.put(new Position(vehicleLane, vehicleCell + vehicleSteps), vehicle);
+                }
             }
         }
     }
