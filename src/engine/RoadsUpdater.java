@@ -28,6 +28,10 @@ public class RoadsUpdater implements Runnable{
         this.roads = List.of(roads);
     }
 
+    public List<Road> getRoads() {
+        return roads;
+    }
+
     @Override
     public void run() {
         while (!finished) {

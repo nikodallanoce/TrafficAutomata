@@ -14,6 +14,14 @@ public class YCross extends Road{
         this.queue = new LinkedBlockingDeque<>(capacity);
     }
 
+    public YCross(){
+        this(Integer.MAX_VALUE, null);
+    }
+
+    public void setOutgoing(Road outgoing){
+        this.outgoing = outgoing;
+    }
+
     public boolean acceptVehicle(Vehicle vehicle) {
         boolean acceptedVehicle = queue.offer(vehicle);
         if (acceptedVehicle) {
@@ -29,5 +37,18 @@ public class YCross extends Road{
             accepted = outgoing.acceptVehicle(queue.element());
             if (accepted) queue.removeFirst();
         }
+    }
+
+    @Override
+    public String toString() {
+        var sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()+" -> ");
+        if (queue.isEmpty()){
+            sb.append("empty");
+        }
+        else {
+            queue.forEach(sb::append);
+        }
+        return sb.toString();
     }
 }

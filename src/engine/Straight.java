@@ -1,6 +1,7 @@
 package engine;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Straight extends Road {
     private final int lanes;
@@ -37,7 +38,7 @@ public class Straight extends Road {
     private void buildRoad() {
         //Set each cell to empty
         road = new boolean[lanes][length];
-        vehiclePositions = new HashMap<>();
+        vehiclePositions = new ConcurrentHashMap<>();
 
         //Fill an array with cell indexes
         ArrayList<Integer> indexes = new ArrayList<>();
@@ -199,18 +200,10 @@ public class Straight extends Road {
         }
     }
 
-    public int getXStartingPoint() {
-        return road[0].length - 1;
-    }
-
-    public int getYStartingPoint() {
-        return road.length - 1;
-    }
-
-
     @Override
     public String toString() {
-        String output = "Start Road\n";
+        //String output = "Start Road\n";
+        String output= "";
         for (int i = 0; i < lanes; i++) {
             for (int j = 0; j < length; j++) {
                 if (!road[i][j]) {
@@ -231,7 +224,7 @@ public class Straight extends Road {
                 output = output.concat("\n");
             }
         }
-        output = output.concat("\nEnd Road\n");
+        //output = output.concat("\nEnd Road\n");
         return output;
     }
 }

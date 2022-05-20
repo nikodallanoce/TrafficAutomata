@@ -1,7 +1,7 @@
 package engine;
 
 public abstract class Road {
-    private Policy policy;
+    private RuleSet policy;
     protected Road outgoing;
 
     public Road(Road outgoing){
@@ -11,12 +11,7 @@ public abstract class Road {
     public abstract void runStep();
 
     public abstract boolean acceptVehicle(Vehicle vehicle);
-
     public Road getNextRoad() {
         return outgoing;
     }
-    public Request handleRequest(Request req){
-        return policy.apply(req);
-    }
-
 }
