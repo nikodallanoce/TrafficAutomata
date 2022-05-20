@@ -1,5 +1,7 @@
-package engine;
+package engine.roads;
 
+import engine.Position;
+import engine.Vehicle;
 import engine.rules.RulesSet;
 
 import java.util.Map;
@@ -22,11 +24,13 @@ public abstract class Road {
     }
 
     public abstract boolean acceptVehicle(Vehicle vehicle);
+
     public Road nextRoad() {
         return outgoing;
     }
 
     public abstract Map<Position, Vehicle> vehicles();
+
     public abstract int maxSpeed();
 
     public abstract int nLanes();

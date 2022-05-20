@@ -1,8 +1,11 @@
-package engine;
+package engine.roads;
+
+import engine.Position;
+import engine.Vehicle;
 
 import java.util.Map;
 
-public class DeadRoad extends Road{
+public class DeadRoad extends Road {
     public DeadRoad() {
         super(null, null);
     }

@@ -1,6 +1,6 @@
 package engine.rules;
 
-import engine.Road;
+import engine.roads.Road;
 
 @FunctionalInterface
 public interface RulesSet {

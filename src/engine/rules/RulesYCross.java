@@ -1,9 +1,8 @@
 package engine.rules;
 
-import engine.Road;
+import engine.roads.Road;
 import engine.Vehicle;
-import engine.YCross;
-import engine.rules.RulesCross;
+import engine.roads.YCross;
 
 import java.util.concurrent.BlockingDeque;
 

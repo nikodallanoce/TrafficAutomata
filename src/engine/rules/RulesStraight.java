@@ -1,9 +1,8 @@
 package engine.rules;
 
 import engine.Position;
-import engine.Road;
+import engine.roads.Road;
 import engine.Vehicle;
-import engine.rules.RulesSet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +94,10 @@ public abstract class RulesStraight implements RulesSet {
 
     @Override
     public void apply(Road road) {
+        //Update the cars' speeds
         updateSpeeds(road);
+
+        //Update the road state
         updateRoad(road);
     }
 }

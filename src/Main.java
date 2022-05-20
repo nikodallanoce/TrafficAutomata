@@ -1,4 +1,8 @@
 import engine.*;
+import engine.roads.DeadRoad;
+import engine.roads.Road;
+import engine.roads.YCross;
+import engine.rules.RulesOvertake;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,5 +15,12 @@ public class Main {
         RoadsUpdater roadUpdater2 = new RoadsUpdater(straight, restart);
         Scenario scenario = new Scenario(roadUpdater1, roadUpdater2);
         scenario.run(10);
+        /*Road deadRoad = new DeadRoad();
+        Road road = new Straight(4, 50, 0.1, 3, new RulesOvertake(0.05, 1, 0.5), deadRoad);
+        System.out.println(road+"\n");
+        for (int i=0;i<10;i++) {
+            road.runStep();
+            System.out.println(road+"\n");
+        }*/
     }
 }

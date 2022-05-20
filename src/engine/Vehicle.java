@@ -1,7 +1,6 @@
 package engine;
 
 public abstract class Vehicle {
-
     private final int ID;
     private static int seq;
     private int speed;

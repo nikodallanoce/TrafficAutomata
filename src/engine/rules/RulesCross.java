@@ -1,7 +1,6 @@
 package engine.rules;
 
-import engine.Road;
-import engine.rules.RulesSet;
+import engine.roads.Road;
 
 public abstract class RulesCross implements RulesSet {
     @Override

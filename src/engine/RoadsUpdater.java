@@ -1,5 +1,7 @@
 package engine;
 
+import engine.roads.Road;
+
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;

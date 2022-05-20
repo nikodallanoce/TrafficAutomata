@@ -1,5 +1,7 @@
 package engine;
 
+import engine.roads.Road;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,11 +9,9 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 public class Scenario {
-
     private List<Thread> threadUpdater;
     private CyclicBarrier barrier;
     private List<RoadsUpdater> roadsUpdaters;
-
     private int step;
     private List<Road> roads;
 
