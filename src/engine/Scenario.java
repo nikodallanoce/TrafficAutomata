@@ -10,15 +10,18 @@ public class Scenario {
     private List<Thread> threadUpdater;
     private CyclicBarrier barrier;
     private List<RoadsUpdater> roadsUpdaters;
+    private Road start;
 
-    public Scenario(RoadsUpdater... updaters){
+    public Scenario(Road start, RoadsUpdater... updaters) {
+        this.start = start;
         setup(updaters);
     }
 
-    public void run(int steps){
+    public void run(int steps) {
         threadUpdater.forEach(Thread::start);
-        for (int i = 0; i < steps -1; i++) {
+        for (int i = 0; i < steps - 1; i++) {
             try {
+                printStatus();
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 throw new RuntimeException(e);
@@ -27,22 +30,38 @@ public class Scenario {
         stopThreads();
     }
 
-    private void setup(RoadsUpdater... updaters){
+    public void printStatus() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        StringBuilder sb = new StringBuilder();
+        var currRoad = start;
+        while (!(currRoad instanceof DeadRoad)) {
+            sb.append(currRoad.toString());
+            currRoad = currRoad.getNextRoad();
+        }
+        System.out.println(sb.toString());
+    }
+
+    private void setup(RoadsUpdater... updaters) {
         int nUpdaters = updaters.length;
         this.roadsUpdaters = List.of(updaters);
         this.barrier = new CyclicBarrier(nUpdaters + 1);
         this.threadUpdater = new ArrayList<>(nUpdaters);
-        for (var upd : updaters){
+        for (var upd : updaters) {
             upd.setBarrier(barrier);
             Thread thr = new Thread(upd);
             threadUpdater.add(thr);
         }
     }
 
-    private void stopThreads(){
+    private void stopThreads() {
         roadsUpdaters.forEach(roadsUpdater -> roadsUpdater.setFinished(true));
         try {
             barrier.await();
+            printStatus();
         } catch (InterruptedException | BrokenBarrierException e) {
             throw new RuntimeException(e);
         }

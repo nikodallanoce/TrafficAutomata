@@ -33,7 +33,7 @@ public class RoadsUpdater implements Runnable{
         while (!finished) {
             for (var road : roads) {
                 road.runStep();
-                System.out.println(road.toString());
+                //System.out.println(road.toString());
             }
             try {
                 barrier.await();
