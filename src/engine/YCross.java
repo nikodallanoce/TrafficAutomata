@@ -14,8 +14,12 @@ public class YCross extends Road{
         this.queue = new LinkedBlockingDeque<>(capacity);
     }
 
-    public boolean acceptVehicle(Vehicle vehicle){
-        return queue.offer(vehicle);
+    public boolean acceptVehicle(Vehicle vehicle) {
+        boolean acceptedVehicle = queue.offer(vehicle);
+        if (acceptedVehicle) {
+            vehicle.setSpeed(1);
+        }
+        return acceptedVehicle;
     }
 
     @Override

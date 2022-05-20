@@ -143,7 +143,7 @@ public class Straight extends Road {
     }
 
     public void runStep() {
-        List<Vehicle> vehiclesOut = new ArrayList<>();
+        //List<Vehicle> vehiclesOut = new ArrayList<>();
 
         //Change lanes if possible
         changeLane();
@@ -159,22 +159,41 @@ public class Straight extends Road {
             Vehicle vehicle = vehiclePosition.getValue();
             int vehicleSteps = vehicle.getSpeed();
             if (vehicleSteps != 0) {
+                //Check if the car can move into another road, if so then move on
+                if (vehicleCell + vehicleSteps == length) {
+                    boolean vehicleAccepted = outgoing.acceptVehicle(vehicle);
+                    if (!vehicleAccepted) {
+                        vehicleSteps--;
+                    }
+                }
+
                 //Remove the car from its current position
                 vehiclePositions.remove(vehiclePosition.getKey());
                 road[vehicleLane][vehicleCell] = false;
-
-                //Check if the car can move into another road, if so then move on
-                if (vehicleCell + vehicleSteps == length) {
-                    //Put car inside new road, Niko
-                    var accepted = outgoing.acceptVehicle(vehicle);
-                    //vehiclesOut.add(vehicle);
-                    continue;
-                }
 
                 //Move the car into its new position inside the road
                 road[vehicleLane][vehicleCell + vehicleSteps] = true;
                 vehiclePositions.put(new Position(vehicleLane, vehicleCell + vehicleSteps), vehicle);
             }
+        }
+    }
+
+    @Override
+    public boolean acceptVehicle(Vehicle vehicle) {
+        List<Integer> freeLanes = new ArrayList<>();
+        for (int i=0;i<lanes;i++) {
+            if (!road[i][0]) {
+                freeLanes.add(i);
+            }
+        }
+        if (freeLanes.size()>0) {
+            Random rand = new Random();
+            int chosenLane = rand.nextInt(freeLanes.size()+1);
+            road[chosenLane][0] = true;
+            vehiclePositions.put(new Position(chosenLane, 0), vehicle);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -209,12 +228,7 @@ public class Straight extends Road {
                 output = output.concat("\n");
             }
         }
-        output = output.concat("End Road\n");
+        output = output.concat("\nEnd Road\n");
         return output;
-    }
-
-    @Override
-    public boolean acceptVehicle(Vehicle vehicle) {
-        return false;
     }
 }
