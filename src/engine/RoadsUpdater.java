@@ -5,9 +5,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 public class RoadsUpdater implements Runnable{
-
-    private int timeStamp;
-    private List<Road> roads;
+    private final List<Road> roads;
     private static int seq;
     private final int ID;
 
@@ -37,7 +35,6 @@ public class RoadsUpdater implements Runnable{
         while (!finished) {
             for (var road : roads) {
                 road.runStep();
-                //System.out.println(road.toString());
             }
             try {
                 barrier.await();

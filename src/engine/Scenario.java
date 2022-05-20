@@ -14,10 +14,8 @@ public class Scenario {
 
     private int step;
     private List<Road> roads;
-    private Road start;
 
-    public Scenario(Road start, RoadsUpdater... updaters) {
-        this.start = start;
+    public Scenario(RoadsUpdater... updaters) {
         this.roads = new LinkedList<>();
         setup(updaters);
     }
@@ -45,12 +43,11 @@ public class Scenario {
         }
         StringBuilder sb = new StringBuilder();
         if (step != 0) {
-            sb.append("STEP " + step);
+            sb.append("STEP ").append(step);
         } else {
             sb.append("Starting STEP ");
         }
         sb.append("\n");
-        var currRoad = start;
         roads.forEach(road -> sb.append(road.toString()).append("\n"));
         sb.append("_____________________________________________");
         System.out.println(sb);

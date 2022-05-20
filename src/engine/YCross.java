@@ -1,21 +1,28 @@
 package engine;
 
+import engine.rules.RulesYCross;
+
+import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class YCross extends Road{
+public class YCross extends Road {
 
     private BlockingDeque<Vehicle> queue;
     private final int capacity;
 
-    public YCross(int capacity, Road outgoing) {
-        super(outgoing);
+    public YCross(int capacity, Road outgoing, RulesYCross rules) {
+        super(outgoing, rules);
         this.capacity = capacity;
         this.queue = new LinkedBlockingDeque<>(capacity);
     }
 
+    public YCross(int capacity, Road outgoing) {
+        this(capacity, outgoing, new RulesYCross());
+    }
+
     public YCross(){
-        this(Integer.MAX_VALUE, null);
+        this(Integer.MAX_VALUE, null, new RulesYCross());
     }
 
     public void setOutgoing(Road outgoing){
@@ -42,7 +49,7 @@ public class YCross extends Road{
     @Override
     public String toString() {
         var sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()+" -> ");
+        sb.append(getClass().getSimpleName()).append(" -> ");
         if (queue.isEmpty()){
             sb.append("empty");
         }
@@ -50,5 +57,38 @@ public class YCross extends Road{
             queue.forEach(sb::append);
         }
         return sb.toString();
+    }
+
+    @Override
+    public Map<Position, Vehicle> vehicles() {
+        return null;
+    }
+
+    @Override
+    public int maxSpeed() {
+        return 0;
+    }
+
+    @Override
+    public int nLanes() {
+        return 0;
+    }
+
+    @Override
+    public int lanesLength() {
+        return 0;
+    }
+
+    @Override
+    public boolean[][] roadStatus() {
+        return new boolean[0][];
+    }
+
+    public BlockingDeque<Vehicle> vehiclesQueue() {
+        return queue;
+    }
+
+    public int capacity() {
+        return capacity;
     }
 }

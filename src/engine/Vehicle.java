@@ -5,12 +5,16 @@ public abstract class Vehicle {
     private final int ID;
     private static int seq;
     private int speed;
-    private int size;
+    private final int size;
 
     public Vehicle(int speed, int size) {
         this.ID = seq++;
         this.speed = speed;
         this.size = size;
+    }
+
+    public Vehicle() {
+        this(1, 1);
     }
 
     @Override
@@ -28,13 +32,5 @@ public abstract class Vehicle {
 
     public int getSize() {
         return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public Vehicle(){
-        this(1, 1);
     }
 }

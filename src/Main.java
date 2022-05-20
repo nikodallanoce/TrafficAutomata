@@ -1,5 +1,3 @@
-import engine.Road;
-import engine.Straight;
 import engine.*;
 
 public class Main {
@@ -11,15 +9,7 @@ public class Main {
         restart.setOutgoing(start);
         RoadsUpdater roadUpdater1 = new RoadsUpdater(start, ycross);
         RoadsUpdater roadUpdater2 = new RoadsUpdater(straight, restart);
-        Scenario scenario = new Scenario(start, roadUpdater1, roadUpdater2);
-        //System.out.println(start.toString());
-        //System.out.println(straight.toString());
+        Scenario scenario = new Scenario(roadUpdater1, roadUpdater2);
         scenario.run(10);
-        /*
-        System.out.println(start);
-        for (int i=0;i<5;i++) {
-            start.runStep();
-            System.out.println(start);
-        }*/
     }
 }
