@@ -31,8 +31,10 @@ public class RoadsUpdater implements Runnable{
     @Override
     public void run() {
         while (!finished) {
-            for (var road : roads)
+            for (var road : roads) {
                 road.runStep();
+                System.out.println(road.toString());
+            }
             try {
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {

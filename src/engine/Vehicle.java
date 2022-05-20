@@ -13,6 +13,11 @@ public abstract class Vehicle {
         this.size = size;
     }
 
+    @Override
+    public String toString() {
+        return "{" + "I=" + ID + ",V=" + speed + '}';
+    }
+
     public int getSpeed() {
         return speed;
     }

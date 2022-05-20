@@ -24,8 +24,9 @@ public class YCross extends Road{
 
     @Override
     public void runStep() {
-        if(queue.size()>0){
-            var accepted = outgoing.acceptVehicle(queue.element());
+        var accepted = true;
+        while (accepted && queue.size()>0){
+            accepted = outgoing.acceptVehicle(queue.element());
             if (accepted) queue.removeFirst();
         }
     }

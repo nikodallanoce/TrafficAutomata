@@ -31,7 +31,7 @@ public class Straight extends Road {
     }
 
     public Straight(int lanes, int length, Road outgoing) {
-        this(lanes, length, 0.5, 5, 0.1, 0.3, 1, null);
+        this(lanes, length, 0.5, 5, 0.1, 0.3, 1, outgoing);
     }
 
     private void buildRoad() {
@@ -171,7 +171,6 @@ public class Straight extends Road {
                 //Remove the car from its current position
                 vehiclePositions.remove(vehiclePosition.getKey());
                 road[vehicleLane][vehicleCell] = false;
-
                 //Move the car into its new position inside the road
                 if (!vehicleAccepted) {
                     road[vehicleLane][vehicleCell + vehicleSteps] = true;
@@ -190,9 +189,9 @@ public class Straight extends Road {
             }
         }
         if (freeLanes.size()>0) {
-            Random rand = new Random();
-            int chosenLane = rand.nextInt(freeLanes.size()+1);
-            road[chosenLane][0] = true;
+            Collections.shuffle(freeLanes);
+            int chosenLane = freeLanes.get(0);
+            road[chosenLane][0]=true;
             vehiclePositions.put(new Position(chosenLane, 0), vehicle);
             return true;
         } else {
@@ -224,7 +223,8 @@ public class Straight extends Road {
                         }
                     }
                     Vehicle vehicle = vehiclePositions.get(vehicleKey);
-                    output = output.concat(String.valueOf(vehicle.getSpeed()));
+                    //output = output.concat(String.valueOf(vehicle.getSpeed()));
+                    output = output.concat(vehicle.toString());
                 }
             }
             if (i != lanes - 1) {

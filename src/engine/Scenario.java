@@ -17,7 +17,7 @@ public class Scenario {
 
     public void run(int steps){
         threadUpdater.forEach(Thread::start);
-        for (int i = 0; i < steps; i++) {
+        for (int i = 0; i < steps -1; i++) {
             try {
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
@@ -41,6 +41,11 @@ public class Scenario {
 
     private void stopThreads(){
         roadsUpdaters.forEach(roadsUpdater -> roadsUpdater.setFinished(true));
+        try {
+            barrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            throw new RuntimeException(e);
+        }
         threadUpdater.forEach(thread -> {
             try {
                 thread.join();
