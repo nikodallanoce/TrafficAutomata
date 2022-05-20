@@ -5,8 +5,12 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        //Scenario scenario = new Scenario();
+
+        Road ycross = new YCross(20, null);
         Road road = new Straight(2, 50, 0.3, 5, 0.05, 0.3, 1, null);
+        RoadsUpdater roadUpdater1 = new RoadsUpdater(road, ycross);
+        Scenario scenario = new Scenario(roadUpdater1);
+
         System.out.println(road);
         for (int i=0;i<5;i++) {
             road.runStep();
