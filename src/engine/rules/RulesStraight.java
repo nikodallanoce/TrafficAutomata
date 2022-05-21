@@ -19,14 +19,14 @@ public abstract class RulesStraight implements RulesSet<Straight> {
     }
 
     private void updateSpeeds(Road straight) {
-        Map<Position, Vehicle> vehiclePositions = straight.vehicles();
+        Map<Vehicle, Position> vehiclePositions = straight.vehicles();
         boolean[][] road = straight.roadStatus();
         int length = straight.lanesLength();
         int maxSpeed = straight.maxSpeed();
         for (var vehiclePosition : vehiclePositions.entrySet()) {
-            int vehicleLane = vehiclePosition.getKey().lane();
-            int vehicleCell = vehiclePosition.getKey().laneCell();
-            Vehicle vehicle = vehiclePosition.getValue();
+            int vehicleLane = vehiclePosition.getValue().lane();
+            int vehicleCell = vehiclePosition.getValue().laneCell();
+            Vehicle vehicle = vehiclePosition.getKey();
             int distance = 0;
 
             //Check how much the car can move forward
@@ -59,15 +59,15 @@ public abstract class RulesStraight implements RulesSet<Straight> {
     }
 
     private void updateRoad(Road straight) {
-        Map<Position, Vehicle> vehiclePositions = straight.vehicles();
+        Map<Vehicle, Position> vehiclePositions = straight.vehicles();
         boolean[][] road = straight.roadStatus();
         int length = straight.lanesLength();
         Road outgoing = straight.nextRoad();
-        Map<Position, Vehicle> vehiclesPreviousPositions = new HashMap<>(vehiclePositions);
+        Map<Vehicle, Position> vehiclesPreviousPositions = new HashMap<>(vehiclePositions);
         for (var vehiclePosition : vehiclesPreviousPositions.entrySet()) {
-            int vehicleLane = vehiclePosition.getKey().lane();
-            int vehicleCell = vehiclePosition.getKey().laneCell();
-            Vehicle vehicle = vehiclePosition.getValue();
+            int vehicleLane = vehiclePosition.getValue().lane();
+            int vehicleCell = vehiclePosition.getValue().laneCell();
+            Vehicle vehicle = vehiclePosition.getKey();
             int vehicleSteps = vehicle.getSpeed();
             if (vehicleSteps != 0) {
                 boolean vehicleAccepted = false;
@@ -87,7 +87,7 @@ public abstract class RulesStraight implements RulesSet<Straight> {
                 //Move the car into its new position inside the road
                 if (!vehicleAccepted) {
                     road[vehicleLane][vehicleCell + vehicleSteps] = true;
-                    vehiclePositions.put(new Position(vehicleLane, vehicleCell + vehicleSteps), vehicle);
+                    vehiclePositions.put(vehicle, new Position(vehicleLane, vehicleCell + vehicleSteps));
                 }
             }
         }

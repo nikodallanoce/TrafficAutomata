@@ -29,7 +29,7 @@ public abstract class Road {
         return outgoing;
     }
 
-    public abstract Map<Position, Vehicle> vehicles();
+    public abstract Map<Vehicle, Position> vehicles();
 
     public abstract int maxSpeed();
 

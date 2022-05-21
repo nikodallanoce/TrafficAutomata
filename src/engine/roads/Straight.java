@@ -17,7 +17,7 @@ public class Straight extends Road {
     private final double density;
     private final int maxSpeed;
     private boolean[][] road;
-    private Map<Position, Vehicle> vehiclePositions;
+    private Map<Vehicle, Position> vehiclePositions;
     private double flow = 0;
 
     public Straight(int lanes, int length, double density, int maxSpeed, RulesSet<Straight> rules, Road outgoing) {
@@ -57,7 +57,7 @@ public class Straight extends Road {
             int cell_index = index % length;
             int vehicle_v = rand.nextInt(maxSpeed + 1);
             Vehicle vehicle = new Car(vehicle_v);
-            vehiclePositions.put(new Position(lane_index, cell_index), vehicle);
+            vehiclePositions.put(vehicle, new Position(lane_index, cell_index));
             road[lane_index][cell_index] = true;
         }
     }
@@ -73,8 +73,8 @@ public class Straight extends Road {
         if (freeLanes.size()>0) {
             Collections.shuffle(freeLanes);
             int chosenLane = freeLanes.get(0);
-            road[chosenLane][0]=true;
-            vehiclePositions.put(new Position(chosenLane, 0), vehicle);
+            road[chosenLane][0] = true;
+            vehiclePositions.put(vehicle, new Position(chosenLane, 0));
             return true;
         } else {
             return false;
@@ -89,13 +89,18 @@ public class Straight extends Road {
                 if (!road[i][j]) {
                     output = output.concat("{         }");
                 } else {
-                    Position vehicleKey = new Position(0,0);
-                    for (var key : vehiclePositions.keySet()) {
-                        if (key.lane() == i && key.laneCell() == j) {
-                            vehicleKey = key;
+                    Position vehiclePosition = new Position(0,0);
+                    for (var position : vehiclePositions.values()) {
+                        if (position.lane() == i && position.laneCell() == j) {
+                            vehiclePosition = position;
                         }
                     }
-                    Vehicle vehicle = vehiclePositions.get(vehicleKey);
+                    Vehicle vehicle = new Car();
+                    for (var entry: vehiclePositions.entrySet()) {
+                        if (entry.getValue() == vehiclePosition) {
+                            vehicle = entry.getKey();
+                        }
+                    }
                     output = output.concat(vehicle.toString());
                 }
             }
@@ -107,7 +112,7 @@ public class Straight extends Road {
     }
 
     @Override
-    public Map<Position, Vehicle> vehicles() {
+    public Map<Vehicle, Position> vehicles() {
         return vehiclePositions;
     }
 

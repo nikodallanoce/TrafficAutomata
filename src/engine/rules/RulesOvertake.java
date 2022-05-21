@@ -15,13 +15,14 @@ public class RulesOvertake extends RulesStraight {
         this.pChangeLane = pChangeLane;
     }
 
-    private void overtake(Map.Entry<Position, Vehicle> vehiclePosition, Road straight, List<Integer> adjacentLanes) {
-        Map<Position, Vehicle> vehiclePositions = straight.vehicles();
+    private Map<Vehicle, Position> overtake(Map.Entry<Vehicle, Position> vehiclePosition, Road straight, List<Integer> adjacentLanes) {
+        //Map<Vehicle, Position> vehiclePositions = straight.vehicles();
         int length = straight.lanesLength();
         boolean[][] road = straight.roadStatus();
-        int vehicleLane = vehiclePosition.getKey().lane();
-        int vehicleCell = vehiclePosition.getKey().laneCell();
-        Vehicle vehicle = vehiclePosition.getValue();
+        int vehicleLane = vehiclePosition.getValue().lane();
+        int vehicleCell = vehiclePosition.getValue().laneCell();
+        Vehicle vehicle = vehiclePosition.getKey();
+        Map<Vehicle, Position> vehiclesNewLane = new HashMap<>();
         for (int otherLane: adjacentLanes) {
             int distanceAhead = 0;
             int distanceAheadOtherLane = 0;
@@ -40,35 +41,49 @@ public class RulesOvertake extends RulesStraight {
                 }
 
                 //How free is the other lane behind the car
-                while (vehicleCell - distanceBehindOtherLane - 1 >= 0 && !road[otherLane][vehicleCell - distanceBehindOtherLane - 1]) {
-                    distanceBehindOtherLane += 1;
+                if (vehicleCell - distanceBehindOtherLane == 0) {
+                    distanceBehindOtherLane = straight.maxSpeed();
+                } else {
+                    while (vehicleCell - distanceBehindOtherLane - 1 >= 0 && !road[otherLane][vehicleCell - distanceBehindOtherLane - 1]) {
+                        if (vehicleCell - distanceBehindOtherLane - 1 == 0) {
+                            distanceBehindOtherLane = straight.maxSpeed();
+                            break;
+                        } else {
+                            distanceBehindOtherLane += 1;
+                        }
+                    }
                 }
 
                 //The car could change lane only if it is convenient in terms of distance
-                if (distanceAhead < distanceAheadOtherLane && distanceBehindOtherLane > straight.maxSpeed()) {
+                if (distanceAhead < distanceAheadOtherLane && distanceBehindOtherLane >= straight.maxSpeed()) {
                     Random rand = new Random();
 
                     //The car changes lane with pChangeLane probability
                     if (rand.nextDouble() <= pChangeLane) {
+                        /*
                         //Remove car from previous lane
                         vehiclePositions.remove(vehiclePosition.getKey());
                         road[vehicleLane][vehicleCell] = false;
 
                         //Move the car into its new lane
                         road[otherLane][vehicleCell] = true;
-                        vehiclePositions.put(new Position(otherLane, vehicleCell), vehicle);
+                        vehiclePositions.put(new Position(otherLane, vehicleCell), vehicle);*/
+                        vehiclesNewLane.put(vehicle, new Position(otherLane, vehicleCell));
                         break;
                     }
                 }
             }
         }
+        return vehiclesNewLane;
     }
 
     private void changeLane(Road straight) {
-        Map<Position, Vehicle> vehiclePositions = straight.vehicles();
-        Map<Position, Vehicle> vehiclesPreviousPositions = new HashMap<>(vehiclePositions);
+        Map<Vehicle, Position> vehiclePositions = straight.vehicles();
+        Map<Vehicle, Position> vehiclesPreviousPositions = new HashMap<>(vehiclePositions);
+        boolean[][] road = straight.roadStatus();
+        Map<Vehicle, Position> vehiclesNewLane = new HashMap<>();
         for (var vehiclePosition : vehiclesPreviousPositions.entrySet()) {
-            int vehicleLane = vehiclePosition.getKey().lane();
+            int vehicleLane = vehiclePosition.getValue().lane();
             //Retrieve the lanes in which the car can move
             List<Integer> adjacentLanes = new ArrayList<>();
             if (vehicleLane + 1 < straight.nLanes()) {
@@ -77,7 +92,27 @@ public class RulesOvertake extends RulesStraight {
             if (vehicleLane - 1 >= 0) {
                 adjacentLanes.add(vehicleLane-1);
             }
-            overtake(vehiclePosition, straight, adjacentLanes);
+            vehiclesNewLane.putAll(overtake(vehiclePosition, straight, adjacentLanes));
+        }
+        for (var vehicleChangedLane: vehiclesNewLane.entrySet()) {
+            Vehicle vehicle = vehicleChangedLane.getKey();
+
+            //Previous position
+            var previousVehiclePosition  = vehiclePositions.get(vehicle);
+            int previousLane = previousVehiclePosition.lane();
+            int previousCell = previousVehiclePosition.laneCell();
+
+            //New position
+            int newLane = vehicleChangedLane.getValue().lane();
+            int newCell = vehicleChangedLane.getValue().laneCell();
+
+            //Remove car from previous lane
+            road[previousLane][previousCell] = false;
+            vehiclePositions.remove(vehicleChangedLane.getKey());
+
+            //Move the car into its new lane
+            road[newLane][newCell] = true;
+            vehiclePositions.put(vehicle, new Position(newLane, newCell));
         }
     }
 

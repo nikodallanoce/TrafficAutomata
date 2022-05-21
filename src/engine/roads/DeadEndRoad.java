@@ -20,7 +20,7 @@ public class DeadEndRoad extends Road {
     }
 
     @Override
-    public Map<Position, Vehicle> vehicles() {
+    public Map<Vehicle, Position> vehicles() {
         return null;
     }
 
