@@ -1,6 +1,7 @@
 package engine.rules;
 
 import engine.Position;
+import engine.Straight;
 import engine.roads.Road;
 import engine.Vehicle;
 
@@ -81,12 +82,11 @@ public class RulesOvertake extends RulesStraight {
     }
 
     @Override
-    public void apply(Road road) {
+    public void apply(Straight road) {
         //Change lanes if possible
         if (road.nLanes()>1) {
             changeLane(road);
         }
-
         //Update the cars' speeds and the road state
         super.apply(road);
     }

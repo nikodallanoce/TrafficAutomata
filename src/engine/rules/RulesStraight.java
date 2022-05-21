@@ -1,6 +1,7 @@
 package engine.rules;
 
 import engine.Position;
+import engine.Straight;
 import engine.roads.Road;
 import engine.Vehicle;
 
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public abstract class RulesStraight implements RulesSet {
+public abstract class RulesStraight implements RulesSet<Straight> {
     private final double pDecreaseSpeed;
     private final int direction;
 
@@ -93,7 +94,7 @@ public abstract class RulesStraight implements RulesSet {
     }
 
     @Override
-    public void apply(Road road) {
+    public void apply(Straight road) {
         //Update the cars' speeds
         updateSpeeds(road);
 

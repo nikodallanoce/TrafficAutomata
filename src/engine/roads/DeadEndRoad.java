@@ -5,8 +5,8 @@ import engine.Vehicle;
 
 import java.util.Map;
 
-public class DeadRoad extends Road {
-    public DeadRoad() {
+public class DeadEndRoad extends Road {
+    public DeadEndRoad() {
         super(null, null);
     }
 

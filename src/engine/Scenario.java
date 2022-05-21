@@ -23,9 +23,8 @@ public class Scenario {
     public void run(int steps) {
         printStatus();
         threadUpdater.forEach(Thread::start);
-        for (int i = 0; i < steps - 1; i++) {
+        for (step = 1; step < steps - 1; step++) {
             try {
-                this.step = i+1;
                 barrier.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 throw new RuntimeException(e);
@@ -37,7 +36,7 @@ public class Scenario {
 
     public void printStatus() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
