@@ -18,7 +18,7 @@ public abstract class Vehicle {
 
     @Override
     public String toString() {
-        return "{" + "I=" + ID + ",V=" + speed + '}';
+        return String.format("{I:%3d,V:%1d}", ID, speed);
     }
 
     public int getSpeed() {

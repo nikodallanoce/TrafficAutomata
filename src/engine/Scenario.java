@@ -47,8 +47,9 @@ public class Scenario {
             sb.append("Starting STEP ");
         }
         sb.append("\n");
-        roads.forEach(road -> sb.append(road.toString()).append("\n"));
-        sb.append("_____________________________________________");
+        roads.forEach(road -> sb.append(road.toString()).append("\n").append("\n"));
+        sb.deleteCharAt(sb.lastIndexOf("\n"));
+        sb.append("_____________________________________________").append("\n");
         System.out.println(sb);
     }
 

@@ -7,7 +7,7 @@ import engine.rules.RulesSet;
 import java.util.Map;
 
 public abstract class Road {
-    private final RulesSet rules;
+    private final RulesSet<Road> rules;
     protected Road outgoing;
     private static int seq = 0;
     private final int roadId;

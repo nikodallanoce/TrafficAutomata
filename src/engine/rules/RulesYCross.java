@@ -10,7 +10,6 @@ public class RulesYCross extends RulesCross {
     @Override
     public void apply(YCross road) {
         Road outgoing = road.nextRoad();
-        //YCross roadCross = (YCross) road;
         BlockingDeque<Vehicle> queue = road.vehiclesQueue();
         var accepted = true;
         while (accepted && queue.size()>0){

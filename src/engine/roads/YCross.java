@@ -3,6 +3,7 @@ package engine.roads;
 import engine.Position;
 import engine.Vehicle;
 import engine.roads.Road;
+import engine.rules.RulesSet;
 import engine.rules.RulesYCross;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ public class YCross extends Road {
     private BlockingDeque<Vehicle> queue;
     private final int capacity;
 
-    public YCross(int capacity, Road outgoing, RulesYCross rules) {
+    public YCross(int capacity, Road outgoing, RulesSet<YCross> rules) {
         super(outgoing, rules);
         this.capacity = capacity;
         this.queue = new LinkedBlockingDeque<>(capacity);

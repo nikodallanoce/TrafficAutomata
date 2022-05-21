@@ -1,7 +1,7 @@
 package engine.rules;
 
 import engine.Position;
-import engine.Straight;
+import engine.roads.Straight;
 import engine.roads.Road;
 import engine.Vehicle;
 

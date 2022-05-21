@@ -1,7 +1,11 @@
-package engine;
+package engine.roads;
 
+import engine.Car;
+import engine.Position;
+import engine.Vehicle;
 import engine.roads.Road;
 import engine.rules.RulesOvertake;
+import engine.rules.RulesSet;
 import engine.rules.RulesStraight;
 
 import java.util.*;
@@ -16,7 +20,7 @@ public class Straight extends Road {
     private Map<Position, Vehicle> vehiclePositions;
     private double flow = 0;
 
-    public Straight(int lanes, int length, double density, int maxSpeed, RulesStraight rules, Road outgoing) {
+    public Straight(int lanes, int length, double density, int maxSpeed, RulesSet<Straight> rules, Road outgoing) {
         super(outgoing, rules);
         this.lanes = lanes;
         this.length = length;
@@ -83,7 +87,7 @@ public class Straight extends Road {
         for (int i = 0; i < lanes; i++) {
             for (int j = 0; j < length; j++) {
                 if (!road[i][j]) {
-                    output = output.concat("_");
+                    output = output.concat("{         }");
                 } else {
                     Position vehicleKey = new Position(0,0);
                     for (var key : vehiclePositions.keySet()) {

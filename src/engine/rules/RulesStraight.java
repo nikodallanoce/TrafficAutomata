@@ -1,7 +1,7 @@
 package engine.rules;
 
 import engine.Position;
-import engine.Straight;
+import engine.roads.Straight;
 import engine.roads.Road;
 import engine.Vehicle;
 
@@ -97,7 +97,6 @@ public abstract class RulesStraight implements RulesSet<Straight> {
     public void apply(Straight road) {
         //Update the cars' speeds
         updateSpeeds(road);
-
         //Update the road state
         updateRoad(road);
     }
