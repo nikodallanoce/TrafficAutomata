@@ -2,7 +2,6 @@ package engine.roads;
 
 import engine.Position;
 import engine.Vehicle;
-import engine.roads.Road;
 import engine.rules.RulesSet;
 import engine.rules.RulesYCross;
 
@@ -100,5 +99,10 @@ public class YCross extends Road {
 
     public int capacity() {
         return capacity;
+    }
+
+    @Override
+    public double updateRoadFlow() {
+        return 0;
     }
 }

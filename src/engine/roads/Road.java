@@ -11,6 +11,7 @@ public abstract class Road {
     protected Road outgoing;
     private static int seq = 0;
     private final int roadId;
+    protected double flow = 0;
 
     public Road(Road outgoing, RulesSet rules) {
         this.outgoing = outgoing;
@@ -33,6 +34,11 @@ public abstract class Road {
 
     public abstract Map<Vehicle, Position> vehicles();
 
+    @Override
+    public String toString() {
+        return "Road Id: "+roadId;
+    }
+
     public abstract int maxSpeed();
 
     public abstract int nLanes();
@@ -40,4 +46,6 @@ public abstract class Road {
     public abstract int lanesLength();
 
     public abstract boolean[][] roadStatus();
+
+    public abstract double updateRoadFlow();
 }

@@ -16,7 +16,6 @@ public class Straight extends Road {
     private final int maxSpeed;
     private boolean[][] road;
     private Map<Vehicle, Position> vehiclePositions;
-    private double flow = 0;
 
     public Straight(int lanes, int length, double density, int maxSpeed, RulesSet<Straight> rules, Road outgoing) {
         super(outgoing, rules);
@@ -63,7 +62,7 @@ public class Straight extends Road {
     @Override
     public void insertVehicle(Vehicle vehicle, int lane, int cell) throws Exception {
         if (lane >=  lanes || cell >= length || lane < 0 || cell < 0) {
-            throw new Exception("The lane and the cell do not respect the dimension of the road");
+            throw new Exception("The lane or the cell do not respect the dimension of the road");
         } else {
             if (road[lane][cell]) {
                 throw new Exception("The position is already occupied");
@@ -148,7 +147,11 @@ public class Straight extends Road {
         return road;
     }
 
-    public double flow() {
-        return flow;
+    @Override
+    public double updateRoadFlow() {
+        for (var vehicle: vehiclePositions.keySet()) {
+            flow += vehicle.getSpeed();
+        }
+        return flow/(lanes*length);
     }
 }
