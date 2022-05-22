@@ -3,10 +3,8 @@ package engine.roads;
 import engine.Car;
 import engine.Position;
 import engine.Vehicle;
-import engine.roads.Road;
 import engine.rules.RulesOvertake;
 import engine.rules.RulesSet;
-import engine.rules.RulesStraight;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

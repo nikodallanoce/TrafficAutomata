@@ -13,6 +13,6 @@ public class Main {
         RoadsUpdater roadUpdater1 = new RoadsUpdater(start, ycross);
         RoadsUpdater roadUpdater2 = new RoadsUpdater(straight, restart);
         Scenario scenario = new Scenario(roadUpdater1, roadUpdater2);
-        scenario.run(2);
+        scenario.run(30);
     }
 }
