@@ -1,7 +1,7 @@
 package engine.roads;
 
 import engine.Position;
-import engine.Vehicle;
+import engine.vehicles.Vehicle;
 
 import java.util.Map;
 
@@ -22,6 +22,16 @@ public class DeadEndRoad extends Road {
     @Override
     public boolean acceptVehicle(Vehicle vehicle) {
         return true;
+    }
+
+    @Override
+    public void setOutgoing(Road outgoing) throws Exception {
+        throw new Exception("No road can be put after a dead end road");
+    }
+
+    @Override
+    public Road nextRoad() {
+        return null;
     }
 
     @Override

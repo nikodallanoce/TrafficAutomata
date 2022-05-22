@@ -3,7 +3,7 @@ package engine.rules;
 import engine.Position;
 import engine.roads.Straight;
 import engine.roads.Road;
-import engine.Vehicle;
+import engine.vehicles.Vehicle;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package engine.roads;
 
 import engine.Position;
-import engine.Vehicle;
+import engine.vehicles.Vehicle;
 import engine.rules.RulesSet;
 import engine.rules.RulesYCross;
 
@@ -26,10 +26,6 @@ public class YCross extends Road {
 
     public YCross(){
         this(Integer.MAX_VALUE, null, new RulesYCross());
-    }
-
-    public void setOutgoing(Road outgoing){
-        this.outgoing = outgoing;
     }
 
     @Override

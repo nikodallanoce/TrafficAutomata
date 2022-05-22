@@ -1,8 +1,8 @@
 package engine.roads;
 
-import engine.Car;
+import engine.vehicles.Car;
 import engine.Position;
-import engine.Vehicle;
+import engine.vehicles.Vehicle;
 import engine.rules.RulesOvertake;
 import engine.rules.RulesSet;
 
@@ -31,7 +31,7 @@ public class Straight extends Road {
     }
 
     public Straight(int lanes, int length, Road outgoing) {
-        this(lanes, length, 0.5, 5, 0.1, 0.3, 1, outgoing);
+        this(lanes, length, 0.5, 5, 0.1, 0.5, 1, outgoing);
     }
 
     private void buildRoad() {
@@ -153,5 +153,21 @@ public class Straight extends Road {
             flow += vehicle.getSpeed();
         }
         return flow/(lanes*length);
+    }
+
+    public double averageSpeed() {
+        double averageSpeed = 0;
+        for(var vehicle: vehiclePositions.keySet()) {
+            averageSpeed += vehicle.getSpeed();
+        }
+        return averageSpeed/vehiclePositions.size();
+    }
+
+    public double density() {
+        return vehiclePositions.size()/(double)(lanes*length);
+    }
+
+    public double newFlow() {
+        return density() * averageSpeed();
     }
 }

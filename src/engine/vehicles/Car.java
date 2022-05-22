@@ -1,4 +1,6 @@
-package engine;
+package engine.vehicles;
+
+import engine.vehicles.Vehicle;
 
 public class Car extends Vehicle {
 

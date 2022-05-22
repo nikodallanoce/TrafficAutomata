@@ -1,4 +1,4 @@
-package engine;
+package engine.vehicles;
 
 public abstract class Vehicle {
     private final int ID;

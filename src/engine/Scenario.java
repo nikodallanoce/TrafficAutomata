@@ -1,13 +1,9 @@
 package engine;
 
-import engine.roads.DeadEndRoad;
 import engine.roads.Road;
 import engine.roads.Straight;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -17,15 +13,30 @@ public class Scenario {
     private List<RoadsUpdater> roadsUpdaters;
     private int step;
     private List<Road> roads;
-    private Road start;
+    private final Road start;
+    private final int sleep;
+    private Map<Straight, List<Double>> flows;
+    private Map<Straight, List<Double>> averageSpeeds;
+    private Map<Straight, List<Double>> densities;
 
-    public Scenario(Road start, int numOfWorker) {
+    public Scenario(Road start, int numOfWorker, int sleep) {
         this.roads = new LinkedList<>();
         this.start = start;
+        this.sleep = sleep;
         setup(numOfWorker);
     }
 
     public void run(int steps) {
+        this.flows = new HashMap<>();
+        this.averageSpeeds = new HashMap<>();
+        this.densities = new HashMap<>();
+        for (var road: roads) {
+            if (road instanceof Straight) {
+                flows.put((Straight) road, new ArrayList<>());
+                averageSpeeds.put((Straight) road, new ArrayList<>());
+                densities.put((Straight) road, new ArrayList<>());
+            }
+        }
         printStatus();
         threadUpdater.forEach(Thread::start);
         for (step = 1; step < steps; step++) {
@@ -35,13 +46,12 @@ public class Scenario {
                 throw new RuntimeException(e);
             }
         }
-        //step++;
         stopThreads();
     }
 
     public void printStatus() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(sleep);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -59,10 +69,20 @@ public class Scenario {
             sb.append(next).append("\n").append("\n");
             next = next.nextRoad();
         }
-        //roads.forEach(road -> sb.append(road.toString()).append("\n").append("\n"));
         sb.deleteCharAt(sb.lastIndexOf("\n"));
         sb.append("_____________________________________________").append("\n");
         System.out.println(sb);
+        if (step % 5 == 0) {
+            for (var roadFlows: flows.entrySet()) {
+                Straight road = roadFlows.getKey();
+                List<Double> previousFlows = roadFlows.getValue();
+                List<Double> previousSpeeds = averageSpeeds.get(road);
+                List<Double> previousDensities = densities.get(road);
+                previousFlows.add(road.newFlow());
+                previousSpeeds.add(road.averageSpeed());
+                previousDensities.add(road.density());
+            }
+        }
     }
 
     private void setup(int numOfWorkers) {
@@ -93,9 +113,9 @@ public class Scenario {
             i = i % numOfWorkers;
         }
         roadsPerThread.get(roadsPerThread.size() - 1).add(start);
-        List<RoadsUpdater> thrs = new LinkedList<>();
-        roadsPerThread.forEach(lstRoads -> thrs.add(new RoadsUpdater(lstRoads)));
-        return thrs;
+        List<RoadsUpdater> threads = new LinkedList<>();
+        roadsPerThread.forEach(lstRoads -> threads.add(new RoadsUpdater(lstRoads)));
+        return threads;
     }
 
     private void stopThreads() {

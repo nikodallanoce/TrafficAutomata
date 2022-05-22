@@ -1,7 +1,7 @@
 package engine.roads;
 
 import engine.Position;
-import engine.Vehicle;
+import engine.vehicles.Vehicle;
 import engine.rules.RulesSet;
 
 import java.util.Map;
@@ -33,6 +33,10 @@ public abstract class Road {
     }
 
     public abstract boolean acceptVehicle(Vehicle vehicle);
+
+    public void setOutgoing(Road outgoing) throws Exception {
+        this.outgoing = outgoing;
+    }
 
     public Road nextRoad() {
         return outgoing;
