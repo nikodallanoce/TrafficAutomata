@@ -48,4 +48,9 @@ public class DeadEndRoad extends Road {
     public boolean[][] roadStatus() {
         return null;
     }
+
+    @Override
+    public double updateRoadFlow() {
+        return 0;
+    }
 }
