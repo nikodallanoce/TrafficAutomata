@@ -33,6 +33,12 @@ public class YCross extends Road {
         this.outgoing = outgoing;
     }
 
+    @Override
+    public void insertVehicle(Vehicle vehicle, int lane, int cell) {
+        queue.offer(vehicle);
+    }
+
+    @Override
     public boolean acceptVehicle(Vehicle vehicle) {
         boolean acceptedVehicle = queue.offer(vehicle);
         if (acceptedVehicle) {

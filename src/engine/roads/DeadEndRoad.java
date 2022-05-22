@@ -15,6 +15,11 @@ public class DeadEndRoad extends Road {
     }
 
     @Override
+    public void insertVehicle(Vehicle vehicle, int lane, int cell) throws Exception {
+        throw new Exception("No car can be put inside a dead end road");
+    }
+
+    @Override
     public boolean acceptVehicle(Vehicle vehicle) {
         return true;
     }

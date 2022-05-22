@@ -61,6 +61,20 @@ public class Straight extends Road {
     }
 
     @Override
+    public void insertVehicle(Vehicle vehicle, int lane, int cell) throws Exception {
+        if (lane >=  lanes || cell >= length || lane < 0 || cell < 0) {
+            throw new Exception("The lane and the cell do not respect the dimension of the road");
+        } else {
+            if (road[lane][cell]) {
+                throw new Exception("The position is already occupied");
+            } else {
+                vehiclePositions.put(vehicle, new Position(lane, cell));
+                road[lane][cell] = true;
+            }
+        }
+    }
+
+    @Override
     public boolean acceptVehicle(Vehicle vehicle) {
         List<Integer> freeLanes = new ArrayList<>();
         for (int i=0;i<lanes;i++) {

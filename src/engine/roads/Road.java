@@ -19,6 +19,8 @@ public abstract class Road {
         seq++;
     }
 
+    public abstract void insertVehicle(Vehicle vehicle, int lane, int cell) throws Exception;
+
     public void runStep() {
         rules.apply(this);
     }
