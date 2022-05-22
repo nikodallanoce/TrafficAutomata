@@ -17,6 +17,7 @@ public abstract class Road {
 
     private final int roadId;
     protected double flow = 0;
+    protected int changesOfLane = 0;
 
     public Road(Road outgoing, RulesSet rules) {
         this.outgoing = outgoing;
@@ -53,4 +54,12 @@ public abstract class Road {
     public abstract boolean[][] roadStatus();
 
     public abstract double updateRoadFlow();
+
+    public void updateChangesOfLane(int changes) {
+        changesOfLane += changes;
+    }
+
+    public int changesOfLane() {
+        return changesOfLane;
+    }
 }
