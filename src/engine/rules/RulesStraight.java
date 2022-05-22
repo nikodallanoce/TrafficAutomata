@@ -95,7 +95,6 @@ public abstract class RulesStraight implements RulesSet<Straight> {
 
     @Override
     public void apply(Straight road) {
-        //Update the cars' speeds
         updateSpeeds(road);
         //Update the road state
         updateRoad(road);

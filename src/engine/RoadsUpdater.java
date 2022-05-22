@@ -24,14 +24,17 @@ public class RoadsUpdater implements Runnable{
     private CyclicBarrier barrier;
 
     public RoadsUpdater(Road... roads){
+        this(List.of(roads));
+    }
+
+    public RoadsUpdater(List<Road> roads){
         this.ID= seq++;
-        this.roads = List.of(roads);
+        this.roads = roads;
     }
 
     public List<Road> getRoads() {
         return roads;
     }
-
     @Override
     public void run() {
         while (!finished) {

@@ -10,6 +10,11 @@ public abstract class Road {
     private final RulesSet<Road> rules;
     protected Road outgoing;
     private static int seq = 0;
+
+    public int getRoadId() {
+        return roadId;
+    }
+
     private final int roadId;
     protected double flow = 0;
 
