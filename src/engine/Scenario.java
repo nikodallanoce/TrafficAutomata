@@ -26,7 +26,7 @@ public class Scenario {
         setup(numOfWorker);
     }
 
-    public void run(int steps) {
+    public List<Map<Straight, List<Double>>> run(int steps) {
         this.flows = new HashMap<>();
         this.averageSpeeds = new HashMap<>();
         this.densities = new HashMap<>();
@@ -47,6 +47,11 @@ public class Scenario {
             }
         }
         stopThreads();
+        List<Map<Straight, List<Double>>> output = new ArrayList<>();
+        output.add(flows);
+        output.add(averageSpeeds);
+        output.add(densities);
+        return output;
     }
 
     public void printStatus() {

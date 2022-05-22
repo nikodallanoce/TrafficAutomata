@@ -51,6 +51,6 @@ public class Main {
         firstStraight.setOutgoing(firstCross);
         secondStraight.setOutgoing(secondCross);
         Scenario scenario = new Scenario(firstStraight, 2, 0);
-        scenario.run(1000);
+        var output = scenario.run(1000);
     }
 }
