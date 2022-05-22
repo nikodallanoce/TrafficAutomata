@@ -62,4 +62,8 @@ public abstract class Road {
     public int changesOfLane() {
         return changesOfLane;
     }
+
+    public double flow() {
+        return flow;
+    }
 }
