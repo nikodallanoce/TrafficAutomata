@@ -105,4 +105,8 @@ public class YCross extends Road {
     public double updateRoadFlow() {
         return 0;
     }
+
+    @Override
+    public void updateChangesOfLane(int changes) {
+    }
 }

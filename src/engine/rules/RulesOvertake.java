@@ -117,6 +117,7 @@ public class RulesOvertake extends RulesStraight {
             road[newLane][newCell] = true;
             vehiclePositions.put(vehicle, new Position(newLane, newCell));
         }
+        straight.updateChangesOfLane(vehiclesNewLane.size());
     }
 
     @Override
