@@ -19,22 +19,24 @@ public class Scenario {
     private Map<Straight, List<Double>> averageSpeeds;
     private Map<Straight, List<Double>> densities;
 
-    public Scenario(Road start, int numOfWorker, int sleep) {
+    public Scenario(Road start, int numOfWorkers, int sleep) {
         this.roads = new LinkedList<>();
         this.start = start;
         this.sleep = sleep;
-        setup(numOfWorker);
+        setup(numOfWorkers);
     }
 
     public List<Map<Straight, List<Double>>> run(int steps) {
         this.flows = new HashMap<>();
         this.averageSpeeds = new HashMap<>();
         this.densities = new HashMap<>();
+        Map<Straight, List<Double>> changeOfLanes = new HashMap<>();
         for (var road: roads) {
             if (road instanceof Straight) {
                 flows.put((Straight) road, new ArrayList<>());
                 averageSpeeds.put((Straight) road, new ArrayList<>());
                 densities.put((Straight) road, new ArrayList<>());
+                changeOfLanes.put((Straight) road, new ArrayList<>());
             }
         }
         printStatus();
@@ -47,10 +49,15 @@ public class Scenario {
             }
         }
         stopThreads();
+        for (var road: flows.keySet()) {
+            var lanesChanged = changeOfLanes.get(road);
+            lanesChanged.add((double) road.changesOfLane()/steps);
+        }
         List<Map<Straight, List<Double>>> output = new ArrayList<>();
         output.add(flows);
         output.add(averageSpeeds);
         output.add(densities);
+        output.add(changeOfLanes);
         return output;
     }
 
