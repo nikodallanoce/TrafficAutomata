@@ -15,6 +15,8 @@ public class Scenario {
     private CyclicBarrier barrier;
     private List<RoadsUpdater> roadsUpdaters;
     private int step;
+
+    private boolean verbose;
     private List<Road> roads;
     private final Road start;
     private final int sleep;
@@ -30,7 +32,8 @@ public class Scenario {
     }
 
 
-    public void run(int steps) {
+    public void run(int steps, boolean verbose) {
+        this.verbose = verbose;
         printStatus();
         threadUpdater.forEach(Thread::start);
         for (step = 1; step < steps; step++) {
@@ -62,28 +65,30 @@ public class Scenario {
     }
 
     public void printStatus() {
-        try {
-            Thread.sleep(sleep);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        StringBuilder sb = new StringBuilder();
-        if (step != 0) {
-            sb.append("STEP ").append(step);
-        } else {
-            sb.append("Starting STEP ");
-        }
-        sb.append("\n");
-        Road next = this.start;
-        sb.append(next.toString()).append("\n").append("\n");
-        next = next.nextRoad();
-        while (!Objects.isNull(next) && !next.equals(this.start)) {
-            sb.append(next).append("\n").append("\n");
+        if(verbose) {
+            try {
+                Thread.sleep(sleep);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            StringBuilder sb = new StringBuilder();
+            if (step != 0) {
+                sb.append("STEP ").append(step);
+            } else {
+                sb.append("Starting STEP ");
+            }
+            sb.append("\n");
+            Road next = this.start;
+            sb.append(next.toString()).append("\n").append("\n");
             next = next.nextRoad();
+            while (!Objects.isNull(next) && !next.equals(this.start)) {
+                sb.append(next).append("\n").append("\n");
+                next = next.nextRoad();
+            }
+            sb.deleteCharAt(sb.lastIndexOf("\n"));
+            sb.append("_____________________________________________").append("\n");
+            System.out.println(sb);
         }
-        sb.deleteCharAt(sb.lastIndexOf("\n"));
-        sb.append("_____________________________________________").append("\n");
-        System.out.println(sb);
         if(step!=0) computeMetrics();
     }
 
