@@ -1,13 +1,18 @@
 import engine.*;
+import engine.metrics.*;
 import engine.roads.DeadEndRoad;
 import engine.roads.Road;
 import engine.roads.Straight;
 import engine.roads.YCross;
 import engine.vehicles.Car;
 
-public class Main {
+import java.util.LinkedList;
+import java.util.List;
 
+public class Main {
+/*
     private static void overtakeScenario(int runs) throws Exception {
+
         //Build roads
         Road firstStraight = new Straight(3, 10, 0, 2, 0.05, 1, 1, null);
         Road secondStraight = new Straight(3, 10, 0.3, 5, 0.05, 1, 1, null);
@@ -41,17 +46,23 @@ public class Main {
         //Run configuration
         Scenario scenario = new Scenario(road, 1, 0);
         scenario.run(runs);
-    }
+    }*/
 
     public static void main(String[] args) throws Exception {
-        Road firstStraight = new Straight(3, 50, null);
-        Road secondStraight = new Straight(2, 50, 0.3, 5, 0.1, 0.5, 1, null);
+        int recInterval = 5;
+        List<Metric<Straight, Double>> metrics = new LinkedList<>();
+        metrics.add(new AvgSpeed(recInterval));
+        metrics.add(new Density(recInterval));
+        metrics.add(new Flow(recInterval));
+        metrics.add(new ChangesOfLane(1000));
+        Road firstStraight = new Straight(3, 50, null, metrics);
+        Road secondStraight = new Straight(2, 50, 0.3, 5, 0.1, 0.5, 1, null, metrics);
         Road firstCross = new YCross(3, secondStraight);
         Road secondCross = new YCross(2, firstStraight);
         firstStraight.setOutgoing(firstCross);
         secondStraight.setOutgoing(secondCross);
         Scenario scenario = new Scenario(firstStraight, 2, 0);
-        var output = scenario.run(1000);
-        System.out.println(output.get(3));
+        scenario.run(1000);
+        System.out.println();
     }
 }

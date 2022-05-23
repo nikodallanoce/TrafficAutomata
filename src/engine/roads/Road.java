@@ -1,9 +1,11 @@
 package engine.roads;
 
 import engine.Position;
+import engine.metrics.Metric;
 import engine.vehicles.Vehicle;
 import engine.rules.RulesSet;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class Road {
@@ -57,7 +59,7 @@ public abstract class Road {
 
     public abstract boolean[][] roadStatus();
 
-    public abstract double updateRoadFlow();
+    public abstract void computeMetrics(int step);
 
     public void updateChangesOfLane(int changes) {
         changesOfLane += changes;

@@ -60,9 +60,10 @@ public class DeadEndRoad extends Road {
     }
 
     @Override
-    public double updateRoadFlow() {
-        return 0;
+    public void computeMetrics(int step) {
+
     }
+
 
     @Override
     public void updateChangesOfLane(int changes) {

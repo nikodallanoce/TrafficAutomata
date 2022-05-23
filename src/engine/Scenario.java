@@ -26,6 +26,20 @@ public class Scenario {
         setup(numOfWorkers);
     }
 
+
+    public void run(int steps) {
+        printStatus();
+        threadUpdater.forEach(Thread::start);
+        for (step = 1; step < steps; step++) {
+            try {
+                barrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        stopThreads();
+    }
+    /*
     public List<Map<Straight, List<Double>>> run(int steps) {
         this.flows = new HashMap<>();
         this.averageSpeeds = new HashMap<>();
@@ -59,7 +73,7 @@ public class Scenario {
         output.add(densities);
         output.add(changeOfLanes);
         return output;
-    }
+    }*/
 
     public void printStatus() {
         try {
@@ -84,16 +98,12 @@ public class Scenario {
         sb.deleteCharAt(sb.lastIndexOf("\n"));
         sb.append("_____________________________________________").append("\n");
         System.out.println(sb);
-        if (step % 5 == 0) {
-            for (var roadFlows: flows.entrySet()) {
-                Straight road = roadFlows.getKey();
-                List<Double> previousFlows = roadFlows.getValue();
-                List<Double> previousSpeeds = averageSpeeds.get(road);
-                List<Double> previousDensities = densities.get(road);
-                previousFlows.add(road.newFlow());
-                previousSpeeds.add(road.averageSpeed());
-                previousDensities.add(road.density());
-            }
+        if(step!=0) computeMetrics();
+    }
+
+    private void computeMetrics(){
+        for (var road: roads) {
+            road.computeMetrics(step);
         }
     }
 

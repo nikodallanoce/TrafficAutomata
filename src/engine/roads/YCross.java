@@ -1,10 +1,13 @@
 package engine.roads;
 
 import engine.Position;
+import engine.metrics.Metric;
 import engine.vehicles.Vehicle;
 import engine.rules.RulesSet;
 import engine.rules.RulesYCross;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -89,17 +92,17 @@ public class YCross extends Road {
         return new boolean[0][];
     }
 
+    @Override
+    public void computeMetrics(int step) {
+        return;
+    }
+
     public BlockingDeque<Vehicle> vehiclesQueue() {
         return queue;
     }
 
     public int capacity() {
         return capacity;
-    }
-
-    @Override
-    public double updateRoadFlow() {
-        return 0;
     }
 
     @Override
