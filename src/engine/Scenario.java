@@ -19,9 +19,6 @@ public class Scenario {
     private List<Road> roads;
     private final Road start;
     private final int sleep;
-    private Map<Straight, List<Double>> flows;
-    private Map<Straight, List<Double>> averageSpeeds;
-    private Map<Straight, List<Double>> densities;
 
     public Scenario(Road start, int numOfWorkers, int sleep) {
         this.roads = new LinkedList<>();
@@ -51,7 +48,7 @@ public class Scenario {
             if(metrics.isPresent()) {
                 String toWrite = metrics.get();
                 try {
-                    FileWriter myWriter = new FileWriter(road.getClass().getSimpleName()+" "+road.getRoadId()+".csv");
+                    FileWriter myWriter = new FileWriter(road.getClass().getSimpleName()+"_"+road.getRoadId()+".csv");
                     myWriter.write(toWrite);
                     myWriter.close();
                 } catch (IOException e) {
