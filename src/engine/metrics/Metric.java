@@ -1,15 +1,10 @@
 package engine.metrics;
 
 import engine.roads.Road;
-import engine.roads.Straight;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 public abstract class Metric<T extends Road, K extends Number> {
-
-    //protected List<K> records;
     protected int intervalOfRecording;
 
     protected Metric(int intervalOfRecording){
@@ -20,7 +15,6 @@ public abstract class Metric<T extends Road, K extends Number> {
         Optional<K> metric = Optional.empty();
         if (step % intervalOfRecording == 0){
             metric = Optional.of(getRecord(road));
-            //records.add(metric.get());
         }
         return metric;
     }

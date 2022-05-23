@@ -9,6 +9,6 @@ public class ChangesOfLane extends Metric<Straight, Double> {
 
     @Override
     public Double getRecord(Straight road) {
-        return (double) road.changesOfLane();//steps
+        return (double) road.changesOfLane();
     }
 }

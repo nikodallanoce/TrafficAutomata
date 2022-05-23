@@ -10,9 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
-/*
-    private static void overtakeScenario(int runs) throws Exception {
 
+    /*private static void overtakeScenario(int runs) throws Exception {
         //Build roads
         Road firstStraight = new Straight(3, 10, 0, 2, 0.05, 1, 1, null);
         Road secondStraight = new Straight(3, 10, 0.3, 5, 0.05, 1, 1, null);
@@ -49,7 +48,7 @@ public class Main {
     }*/
 
     public static void main(String[] args) throws Exception {
-        int recInterval = 5;
+        int recInterval = 10;
         List<Metric<Straight, Double>> metrics = new LinkedList<>();
         metrics.add(new AvgSpeed(recInterval));
         metrics.add(new Density(recInterval));

@@ -1,11 +1,9 @@
 package engine.roads;
 
 import engine.Position;
-import engine.metrics.Metric;
 import engine.vehicles.Vehicle;
 import engine.rules.RulesSet;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

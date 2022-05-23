@@ -2,8 +2,6 @@ package engine.metrics;
 
 import engine.roads.Straight;
 
-import java.util.Optional;
-
 public class AvgSpeed extends Metric<Straight, Double> {
 
     public AvgSpeed(int intervalOfRecording) {

@@ -48,7 +48,8 @@ public class Scenario {
             if(metrics.isPresent()) {
                 String toWrite = metrics.get();
                 try {
-                    FileWriter myWriter = new FileWriter(road.getClass().getSimpleName()+"_"+road.getRoadId()+".csv");
+                    String filename = road.getClass().getSimpleName() + road.getRoadId() + "_" + road.nLanes() + "_" + road.lanesLength() + ".csv";
+                    FileWriter myWriter = new FileWriter(filename);
                     myWriter.write(toWrite);
                     myWriter.close();
                 } catch (IOException e) {
@@ -85,10 +86,10 @@ public class Scenario {
             sb.append("_____________________________________________").append("\n");
             System.out.println(sb);
         }
-        if(step!=0) computeMetrics();
+        if(step != 0) computeMetrics();
     }
 
-    private void computeMetrics(){
+    private void computeMetrics() {
         for (var road: roads) {
             road.computeMetrics(step);
         }
