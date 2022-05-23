@@ -9,6 +9,7 @@ import engine.rules.RulesYCross;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -107,5 +108,10 @@ public class YCross extends Road {
 
     @Override
     public void updateChangesOfLane(int changes) {
+    }
+
+    @Override
+    public Optional<String> metricsToString() {
+        return Optional.empty();
     }
 }

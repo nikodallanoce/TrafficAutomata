@@ -19,7 +19,7 @@ public class Straight extends Road {
 
     @Override
     public void computeMetrics(int step) {
-        for (var metric : metrics.keySet()){
+        for (var metric : metrics.keySet()) {
             var ris = metric.compute(this, step);
             ris.ifPresent(aDouble -> metrics.get(metric).add(aDouble));
         }
@@ -40,7 +40,7 @@ public class Straight extends Road {
 
     private void initializeMetrics(List<Metric<Straight, Double>> metr) {
         this.metrics = new HashMap<>();
-        metr.forEach(m-> metrics.put(m, new LinkedList<>()));
+        metr.forEach(m -> metrics.put(m, new LinkedList<>()));
     }
 
     public Straight(int lanes, int length, double density, int maxSpeed, double pDecreaseSpeed, double pChangeLane, int direction, Road outgoing, List<Metric<Straight, Double>> metrics) {
@@ -179,5 +179,26 @@ public class Straight extends Road {
 
     public double newFlow() {
         return density() * averageSpeed();
+    }
+
+    public Optional<String> metricsToString() {
+        StringBuilder ris = new StringBuilder();
+        List<List<Double>> app = new LinkedList<>(metrics.values());
+        for(var metric: metrics.keySet()){
+            ris.append(metric.getClass().getSimpleName());
+            ris.append(";");
+        }
+        ris.deleteCharAt(ris.length()-1);
+        ris.append("\n");
+        int limit = app.get(0).size();
+        for (int i = 0; i < limit; i++) {
+            for (var met : app) {
+                ris.append(met.get(i));
+                ris.append(";");
+            }
+            ris.deleteCharAt(ris.length()-1);
+            ris.append("\n");
+        }
+        return Optional.of(ris.toString());
     }
 }

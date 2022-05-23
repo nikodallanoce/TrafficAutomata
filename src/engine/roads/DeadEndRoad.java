@@ -4,6 +4,7 @@ import engine.Position;
 import engine.vehicles.Vehicle;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class DeadEndRoad extends Road {
     public DeadEndRoad() {
@@ -67,5 +68,10 @@ public class DeadEndRoad extends Road {
 
     @Override
     public void updateChangesOfLane(int changes) {
+    }
+
+    @Override
+    public Optional<String> metricsToString() {
+        return Optional.empty();
     }
 }

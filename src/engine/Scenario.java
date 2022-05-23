@@ -1,8 +1,11 @@
 package engine;
 
+import engine.metrics.Metric;
 import engine.roads.Road;
 import engine.roads.Straight;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -39,41 +42,24 @@ public class Scenario {
         }
         stopThreads();
     }
-    /*
-    public List<Map<Straight, List<Double>>> run(int steps) {
-        this.flows = new HashMap<>();
-        this.averageSpeeds = new HashMap<>();
-        this.densities = new HashMap<>();
-        Map<Straight, List<Double>> changeOfLanes = new HashMap<>();
-        for (var road: roads) {
-            if (road instanceof Straight) {
-                flows.put((Straight) road, new ArrayList<>());
-                averageSpeeds.put((Straight) road, new ArrayList<>());
-                densities.put((Straight) road, new ArrayList<>());
-                changeOfLanes.put((Straight) road, new ArrayList<>());
+
+    public void printMetrics(){
+        for (var road:roads) {
+            Optional<String> metrics = road.metricsToString();
+            if(metrics.isPresent()) {
+                String toWrite = metrics.get();
+                try {
+                    FileWriter myWriter = new FileWriter(road.getClass().getSimpleName()+" "+road.getRoadId()+".csv");
+                    myWriter.write(toWrite);
+                    myWriter.close();
+                } catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                }
             }
         }
-        printStatus();
-        threadUpdater.forEach(Thread::start);
-        for (step = 1; step < steps; step++) {
-            try {
-                barrier.await();
-            } catch (InterruptedException | BrokenBarrierException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        stopThreads();
-        for (var road: flows.keySet()) {
-            var lanesChanged = changeOfLanes.get(road);
-            lanesChanged.add((double) road.changesOfLane()/steps);
-        }
-        List<Map<Straight, List<Double>>> output = new ArrayList<>();
-        output.add(flows);
-        output.add(averageSpeeds);
-        output.add(densities);
-        output.add(changeOfLanes);
-        return output;
-    }*/
+
+    }
 
     public void printStatus() {
         try {

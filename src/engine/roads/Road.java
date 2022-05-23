@@ -7,6 +7,7 @@ import engine.rules.RulesSet;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class Road {
     private final RulesSet<Road> rules;
@@ -68,6 +69,8 @@ public abstract class Road {
     public int changesOfLane() {
         return changesOfLane;
     }
+
+    public abstract Optional<String> metricsToString();
 
     public double flow() {
         return flow;

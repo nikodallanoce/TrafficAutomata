@@ -54,7 +54,7 @@ public class Main {
         metrics.add(new AvgSpeed(recInterval));
         metrics.add(new Density(recInterval));
         metrics.add(new Flow(recInterval));
-        metrics.add(new ChangesOfLane(1000));
+        metrics.add(new ChangesOfLane(recInterval));
         Road firstStraight = new Straight(3, 50, null, metrics);
         Road secondStraight = new Straight(2, 50, 0.3, 5, 0.1, 0.5, 1, null, metrics);
         Road firstCross = new YCross(3, secondStraight);
@@ -63,6 +63,7 @@ public class Main {
         secondStraight.setOutgoing(secondCross);
         Scenario scenario = new Scenario(firstStraight, 2, 0);
         scenario.run(1000);
+        scenario.printMetrics();
         System.out.println();
     }
 }
