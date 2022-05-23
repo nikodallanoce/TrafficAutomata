@@ -1,6 +1,5 @@
 package engine;
 
-import engine.metrics.Metric;
 import engine.roads.Road;
 import engine.roads.Straight;
 
@@ -34,7 +33,7 @@ public class Scenario {
 
     public void run(int steps, boolean verbose) {
         this.verbose = verbose;
-        printStatus();
+        endOfAStep();
         threadUpdater.forEach(Thread::start);
         for (step = 1; step < steps; step++) {
             try {
@@ -64,7 +63,7 @@ public class Scenario {
 
     }
 
-    public void printStatus() {
+    public void endOfAStep() {
         if(verbose) {
             try {
                 Thread.sleep(sleep);
@@ -100,7 +99,7 @@ public class Scenario {
 
     private void setup(int numOfWorkers) {
         this.roadsUpdaters = setupThreadsWorkload(numOfWorkers);
-        this.barrier = new CyclicBarrier(numOfWorkers + 1, this::printStatus);
+        this.barrier = new CyclicBarrier(numOfWorkers + 1, this::endOfAStep);
         this.threadUpdater = new ArrayList<>(numOfWorkers);
         for (var upd : roadsUpdaters) {
             roads.addAll(upd.getRoads());
