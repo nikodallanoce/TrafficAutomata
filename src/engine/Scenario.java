@@ -48,7 +48,7 @@ public class Scenario {
             if(metrics.isPresent()) {
                 String toWrite = metrics.get();
                 try {
-                    String filename = road.getClass().getSimpleName() + road.getRoadId() + "_" + road.nLanes() + "_" + road.lanesLength() + ".csv";
+                    String filename = "metrics_datasets/" + road.getClass().getSimpleName() + road.getRoadId() + "_" + road.nLanes() + "_" + road.lanesLength() + ".csv";
                     FileWriter myWriter = new FileWriter(filename);
                     myWriter.write(toWrite);
                     myWriter.close();
