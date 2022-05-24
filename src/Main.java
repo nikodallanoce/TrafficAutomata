@@ -79,21 +79,21 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        pingPongScenario(5);
+        //pingPongScenario(5);
         int recInterval = 10;
         List<Metric<Straight, Double>> metrics = new LinkedList<>();
         metrics.add(new AvgSpeed(recInterval));
         metrics.add(new Density(recInterval));
         metrics.add(new Flow(recInterval));
         metrics.add(new ChangesOfLane(recInterval));
-        Road firstStraight = new Straight(5, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
+        Road firstStraight = new Straight(2, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
         Road secondStraight = new Straight(2, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
-        Road firstCross = new YCross(5, secondStraight);
+        Road firstCross = new YCross(2, secondStraight);
         Road secondCross = new YCross(2, firstStraight);
         firstStraight.setOutgoing(firstCross);
         secondStraight.setOutgoing(secondCross);
         Scenario scenario = new Scenario(firstStraight, 2, 0);
-        scenario.run(1000, true);
+        scenario.run(500, false);
         scenario.printMetrics();
         System.out.println();
     }
