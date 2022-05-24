@@ -86,9 +86,9 @@ public class Main {
         metrics.add(new Density(recInterval));
         metrics.add(new Flow(recInterval));
         metrics.add(new ChangesOfLane(recInterval));
-        Road firstStraight = new Straight(2, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
+        Road firstStraight = new Straight(5, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
         Road secondStraight = new Straight(2, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
-        Road firstCross = new YCross(2, secondStraight);
+        Road firstCross = new YCross(5, secondStraight);
         Road secondCross = new YCross(2, firstStraight);
         firstStraight.setOutgoing(firstCross);
         secondStraight.setOutgoing(secondCross);
