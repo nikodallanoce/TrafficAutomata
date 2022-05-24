@@ -43,12 +43,14 @@ public class Scenario {
     }
 
     public void printMetrics(){
+        var curr_time = System.currentTimeMillis();
+        curr_time = curr_time%100000;
         for (var road:roads) {
             Optional<String> metrics = road.metricsToString();
             if(metrics.isPresent()) {
                 String toWrite = metrics.get();
                 try {
-                    String filename = "metrics_datasets/" + road.getClass().getSimpleName() + road.getRoadId() + "_" + road.nLanes() + "_" + road.lanesLength() + ".csv";
+                    String filename = "metrics_datasets/" + road.getClass().getSimpleName() + road.getRoadId() + "_" + road.nLanes() + "_" + road.lanesLength() +"_"+ curr_time+".csv";
                     FileWriter myWriter = new FileWriter(filename);
                     myWriter.write(toWrite);
                     myWriter.close();
