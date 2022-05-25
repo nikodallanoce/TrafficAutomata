@@ -51,7 +51,7 @@ public class Scenario {
     public void printMetrics() {
         var curr_time = System.currentTimeMillis();
         curr_time = curr_time % 100000;
-        for (var road : roads) {
+        for (var road: roads) {
             Optional<String> metrics = road.metricsToString();
             if (metrics.isPresent()) {
                 String toWrite = metrics.get();
