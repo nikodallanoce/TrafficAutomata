@@ -17,7 +17,7 @@ public class Scenario {
 
     private boolean verbose;
     private List<Road> roads;
-    private final Road start;
+    private Road start;
     private final int sleep;
 
     public Scenario(Road start, int numOfWorkers, int sleep) {
@@ -25,6 +25,12 @@ public class Scenario {
         this.start = start;
         this.sleep = sleep;
         setup(numOfWorkers);
+    }
+
+    public Scenario(int sleep, RoadsUpdater... roadsUpdater) {
+        this.roads = new LinkedList<>();
+        this.sleep = sleep;
+        setup(roadsUpdater);
     }
 
 
@@ -42,12 +48,12 @@ public class Scenario {
         stopThreads();
     }
 
-    public void printMetrics(){
+    public void printMetrics() {
         var curr_time = System.currentTimeMillis();
-        curr_time = curr_time%100000;
-        for (var road:roads) {
+        curr_time = curr_time % 100000;
+        for (var road : roads) {
             Optional<String> metrics = road.metricsToString();
-            if(metrics.isPresent()) {
+            if (metrics.isPresent()) {
                 String toWrite = metrics.get();
                 try {
                     String filename = "metrics_datasets/S" + road.getRoadId() + "_L" + road.nLanes() + "_C" + road.lanesLength() + "_" + curr_time + ".csv";
@@ -60,90 +66,111 @@ public class Scenario {
                 }
             }
         }
-
     }
 
     public void endOfAStep() {
-        if(verbose) {
+        if (verbose) {
             try {
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            StringBuilder sb = new StringBuilder();
-            if (step != 0) {
-                sb.append("STEP ").append(step);
-            } else {
-                sb.append("Starting STEP ");
-            }
-            sb.append("\n");
+            printRoadsStatus();
+        }
+        if (step != 0) computeMetrics();
+    }
+
+    private void printRoadsStatus() {
+        StringBuilder sb = new StringBuilder();
+        if (step != 0) {
+            sb.append("STEP ").append(step);
+        } else {
+            sb.append("Starting STEP ");
+        }
+        sb.append("\n");
+
+        if (!Objects.isNull(start)) {
             Road next = this.start;
-            sb.append(next.toString()).append("\n").append("\n");
+            sb.append(next).append("\n").append("\n");
             next = next.nextRoad();
             while (!Objects.isNull(next) && !next.equals(this.start)) {
                 sb.append(next).append("\n").append("\n");
                 next = next.nextRoad();
             }
-            sb.deleteCharAt(sb.lastIndexOf("\n"));
-            sb.append("_____________________________________________").append("\n");
-            System.out.println(sb);
-        }
-        if(step != 0) computeMetrics();
-    }
-
-    private void computeMetrics() {
-        for (var road: roads) {
-            road.computeMetrics(step);
-        }
-    }
-
-    private void setup(int numOfWorkers) {
-        this.roadsUpdaters = setupThreadsWorkload(numOfWorkers);
-        this.barrier = new CyclicBarrier(numOfWorkers + 1, this::endOfAStep);
-        this.threadUpdater = new ArrayList<>(numOfWorkers);
-        for (var upd : roadsUpdaters) {
-            roads.addAll(upd.getRoads());
-            upd.setBarrier(barrier);
-            Thread thr = new Thread(upd);
-            threadUpdater.add(thr);
-        }
-    }
-
-    private List<RoadsUpdater> setupThreadsWorkload(int numOfWorkers) {
-        List<List<Road>> roadsPerThread = new ArrayList<>(numOfWorkers);
-        Road next = start.nextRoad();
-        int i = 0;
-        while (!Objects.isNull(next) && !next.equals(start)) {
-            if (roadsPerThread.size() <= i) {
-                roadsPerThread.add(new LinkedList<>());
+        } else {
+            for (var road : roads) {
+                sb.append(road).append("\n").append("\n");
             }
-            roadsPerThread.get(i).add(next);
-            if (next instanceof Straight) {
-                i++;
-            }
-            next = next.nextRoad();
-            i = i % numOfWorkers;
         }
-        roadsPerThread.get(roadsPerThread.size() - 1).add(start);
-        List<RoadsUpdater> threads = new LinkedList<>();
-        roadsPerThread.forEach(lstRoads -> threads.add(new RoadsUpdater(lstRoads)));
-        return threads;
+        sb.deleteCharAt(sb.lastIndexOf("\n"));
+        sb.append("_____________________________________________").append("\n");
+        System.out.println(sb);
     }
 
-    private void stopThreads() {
-        roadsUpdaters.forEach(roadsUpdater -> roadsUpdater.setFinished(true));
-        try {
-            barrier.await();
-        } catch (InterruptedException | BrokenBarrierException e) {
-            throw new RuntimeException(e);
+    private void computeMetrics () {
+            for (var road : roads) {
+                road.computeMetrics(step);
+            }
         }
-        threadUpdater.forEach(thread -> {
+
+        private void setup (RoadsUpdater...updaters){
+            this.roadsUpdaters = List.of(updaters);
+            int numOfWorkers = roadsUpdaters.size();
+            threadsSetup(numOfWorkers);
+        }
+
+        private void setup ( int numOfWorkers){
+            this.roadsUpdaters = setupThreadsWorkload(numOfWorkers);
+            threadsSetup(numOfWorkers);
+        }
+
+        private void threadsSetup ( int numOfWorkers){
+            this.barrier = new CyclicBarrier(numOfWorkers + 1, this::endOfAStep);
+            this.threadUpdater = new ArrayList<>(numOfWorkers);
+            for (var upd : roadsUpdaters) {
+                roads.addAll(upd.getRoads());
+                upd.setBarrier(barrier);
+                Thread thr = new Thread(upd);
+                threadUpdater.add(thr);
+            }
+        }
+
+
+        private List<RoadsUpdater> setupThreadsWorkload ( int numOfWorkers){
+            List<List<Road>> roadsPerThread = new ArrayList<>(numOfWorkers);
+            Road next = start.nextRoad();
+            int i = 0;
+            while (!Objects.isNull(next) && !next.equals(start)) {
+                if (roadsPerThread.size() <= i) {
+                    roadsPerThread.add(new LinkedList<>());
+                }
+                roadsPerThread.get(i).add(next);
+                if (next instanceof Straight) {
+                    i++;
+                }
+                next = next.nextRoad();
+                i = i % numOfWorkers;
+            }
+            roadsPerThread.get(roadsPerThread.size() - 1).add(start);
+            List<RoadsUpdater> threads = new LinkedList<>();
+            roadsPerThread.forEach(lstRoads -> threads.add(new RoadsUpdater(lstRoads)));
+            return threads;
+        }
+
+        private void stopThreads () {
+            roadsUpdaters.forEach(roadsUpdater -> roadsUpdater.setFinished(true));
             try {
-                thread.join();
-            } catch (InterruptedException e) {
+                barrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
                 throw new RuntimeException(e);
             }
-        });
+            threadUpdater.forEach(thread -> {
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
+        }
     }
-}
