@@ -40,7 +40,7 @@ public class Straight extends Road {
 
     private void initializeMetrics(List<Metric<Straight, Double>> metric) {
         this.metrics = new HashMap<>();
-        metric.forEach(m -> metrics.put(m, new LinkedList<>()));
+        if(!Objects.isNull(metric)) metric.forEach(m -> metrics.put(m, new LinkedList<>()));
     }
 
     public Straight(int lanes, int length, double density, int maxSpeed, double pDecreaseSpeed, double pChangeLane, int direction, Road outgoing, List<Metric<Straight, Double>> metrics) {

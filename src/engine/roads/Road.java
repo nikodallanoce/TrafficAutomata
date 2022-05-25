@@ -4,7 +4,9 @@ import engine.Position;
 import engine.vehicles.Vehicle;
 import engine.rules.RulesSet;
 
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public abstract class Road {
