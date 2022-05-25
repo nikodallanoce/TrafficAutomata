@@ -78,7 +78,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         //pingPongScenario(5);
         int recInterval = 10;
         List<Metric<Straight, Double>> metrics = new LinkedList<>();
@@ -86,15 +86,26 @@ public class Main {
         metrics.add(new Density(recInterval));
         metrics.add(new Flow(recInterval));
         metrics.add(new ChangesOfLane(recInterval));
+
         Road firstStraight = new Straight(5, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
         Road secondStraight = new Straight(2, 50, 0.5, 5, 0.1, 0.5, 1, null, metrics);
+        Road prova = new Straight(1, 10, 0.5, 5, 0.1, 0.5, 1, null, metrics);
         Road firstCross = new YCross(5, secondStraight);
         Road secondCross = new YCross(2, firstStraight);
-        firstStraight.setOutgoing(firstCross);
-        secondStraight.setOutgoing(secondCross);
-        Scenario scenario = new Scenario(firstStraight, 2, 0);
-        scenario.run(500, false);
-        scenario.printMetrics();
+
+        try {
+            firstStraight.setOutgoing(firstCross);
+            secondStraight.setOutgoing(secondCross);
+            prova.setOutgoing(secondCross);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        var thr1 = new RoadsUpdater(firstCross, secondStraight);
+        var thr2 = new RoadsUpdater(secondCross, firstStraight);
+        var thr3 = new RoadsUpdater(prova);
+        Scenario scenario = new Scenario(0, thr1, thr2, thr3);
+        scenario.run(10, true);
+        //scenario.printMetrics();
         System.out.println();
     }
 }
