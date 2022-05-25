@@ -126,7 +126,7 @@ public class Main {
         int runs_second_scenarios = 10;
         try {
             overtakeScenario(runs_first_scenarios);
-            pingPongScenario(runs_first_scenarios);
+            //pingPongScenario(runs_first_scenarios);
             //randomScenario(runs_second_scenarios);
             //intersectionScenario(runs_second_scenarios);
         } catch (Exception e) {
